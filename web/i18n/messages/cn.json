@@ -1,0 +1,85 @@
+{
+  "lang": "中文",
+  "app_name": "KaifangLab",
+  "header": {
+    "label_profile": "个人信息",
+    "label_logout": "退出登录",
+    "label_logout_dialog_title": "提示",
+    "text_logout_confirm": "确认退出？",
+    "text_logout_success": "已退出登录"
+  },
+  "views": {
+    "login": {
+      "text_login": "登录",
+      "message_input_username_password": "请输入用户名和密码",
+      "message_verifying": "正在验证...",
+      "message_login_success": "登录成功",
+      "platform_descriptor": "智能体服务端能力平台",
+      "platform_label": "KAIFANGWORK · 服务平台",
+      "intro_title": "面向智能体体系的\n服务端基础能力",
+      "intro_description": "统一维护账号身份、访问权限与组织资源，为 KaifangWork 提供稳定、可追溯的服务支撑。",
+      "capability_identity": "身份认证与角色授权",
+      "capability_organization": "组织架构与资源管理",
+      "capability_audit": "管理操作审计留痕",
+      "entry_label": "管理端入口",
+      "heading": "登录 KaifangLab",
+      "prompt": "请输入已分配的管理账号与密码",
+      "label_username": "管理账号",
+      "placeholder_username": "请输入管理账号",
+      "label_password": "登录密码",
+      "placeholder_password": "请输入登录密码",
+      "security_note": "平台访问受权限策略保护，请妥善保管账号凭据。",
+      "footer_brand": "KaifangLab · KaifangWork 服务端能力平台",
+      "footer_capabilities": "统一身份 · 权限控制 · 审计追溯"
+    },
+    "workbench": {
+      "label_workbench": "工作台",
+      "platform_label": "KAIFANGWORK · 服务平台",
+      "title": "KaifangWork 服务端能力平台",
+      "text_hello": "当前用户 · {username}",
+      "text_welcome": "为 KaifangWork 自研智能体提供统一的身份认证、访问控制、组织管理与审计能力。",
+      "label_overview": "平台概况",
+      "label_capabilities": "平台能力",
+      "label_identity": "身份与权限",
+      "text_identity": "维护用户账号、角色授权和接口访问范围。",
+      "label_organization": "组织与资源",
+      "text_organization": "统一管理部门结构、菜单资源与管理端配置。",
+      "label_audit": "审计与追溯",
+      "text_audit": "记录关键管理操作，支持按需查询与核验。",
+      "text_boundary": "KaifangLab 提供平台级服务端管理能力；智能体运行与任务编排由 KaifangWork 负责。"
+    },
+    "profile": {
+      "label_profile": "个人中心",
+      "label_modify_information": "修改信息",
+      "label_change_password": "修改密码",
+      "label_avatar": "头像",
+      "label_username": "用户姓名",
+      "label_email": "邮箱",
+      "label_old_password": "旧密码",
+      "label_new_password": "新密码",
+      "label_confirm_password": "确认密码",
+      "placeholder_username": "请填写姓名",
+      "placeholder_email": "请填写邮箱",
+      "placeholder_old_password": "请输入旧密码",
+      "placeholder_new_password": "请输入新密码",
+      "placeholder_confirm_password": "请再次输入新密码",
+      "message_username_required": "请输入昵称",
+      "message_old_password_required": "请输入旧密码",
+      "message_new_password_required": "请输入新密码",
+      "message_password_confirmation_required": "请再次输入密码",
+      "message_password_confirmation_diff": "两次密码输入不一致"
+    },
+    "errors": {
+      "label_error": "错误页",
+      "text_back_to_home": "返回首页"
+    }
+  },
+  "common": {
+    "text": {
+      "update_success": "修改成功"
+    },
+    "buttons": {
+      "update": "修改"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "lang": "English",
+  "app_name": "KaifangLab",
+  "header": {
+    "label_profile": "Profile",
+    "label_logout": "Logout",
+    "label_logout_dialog_title": "Hint",
+    "text_logout_confirm": "Logout confirm",
+    "text_logout_success": "Logout success"
+  },
+  "views": {
+    "login": {
+      "text_login": "Login",
+      "message_input_username_password": "Please enter username and password",
+      "message_verifying": "Verifying...",
+      "message_login_success": "Login successful",
+      "platform_descriptor": "Agent Server Capability Platform",
+      "platform_label": "KAIFANGWORK · SERVICE PLATFORM",
+      "intro_title": "Foundational server\ncapabilities for agents",
+      "intro_description": "Centrally manage identities, access permissions, and organizational resources for reliable, traceable KaifangWork services.",
+      "capability_identity": "Identity and role authorization",
+      "capability_organization": "Organization and resource management",
+      "capability_audit": "Administrative audit trail",
+      "entry_label": "ADMINISTRATION",
+      "heading": "Sign in to KaifangLab",
+      "prompt": "Enter your assigned administrator credentials",
+      "label_username": "Username",
+      "placeholder_username": "Enter your username",
+      "label_password": "Password",
+      "placeholder_password": "Enter your password",
+      "security_note": "Access is governed by platform permissions. Keep your credentials secure.",
+      "footer_brand": "KaifangLab · KaifangWork server platform",
+      "footer_capabilities": "Identity · Access control · Audit trail"
+    },
+    "workbench": {
+      "label_workbench": "Workbench",
+      "platform_label": "KAIFANGWORK · SERVICE PLATFORM",
+      "title": "KaifangWork Server Capability Platform",
+      "text_hello": "Current user · {username}",
+      "text_welcome": "Foundational identity, access control, organization, and audit capabilities for the KaifangWork agent platform.",
+      "label_overview": "PLATFORM OVERVIEW",
+      "label_capabilities": "Platform capabilities",
+      "label_identity": "Identity and access",
+      "text_identity": "Manage user accounts, role assignments, and API access scopes.",
+      "label_organization": "Organization and resources",
+      "text_organization": "Maintain department structure, menu resources, and console configuration.",
+      "label_audit": "Audit and traceability",
+      "text_audit": "Record key administrative actions for review and verification.",
+      "text_boundary": "KaifangLab provides platform-level server management. Agent execution and task orchestration are handled by KaifangWork."
+    },
+    "profile": {
+      "label_profile": "Profile",
+      "label_modify_information": "Modify your information",
+      "label_change_password": "Change password",
+      "label_avatar": "Avatar",
+      "label_username": "Username",
+      "label_email": "Email",
+      "label_old_password": "Old password",
+      "label_new_password": "New password",
+      "label_confirm_password": "Password confirmation",
+      "placeholder_username": "Please fill in your name",
+      "placeholder_email": "Please fill in your email address",
+      "placeholder_old_password": "Please enter the old password",
+      "placeholder_new_password": "Please enter a new password",
+      "placeholder_confirm_password": "Please enter the confirm password",
+      "message_username_required": "Please enter username",
+      "message_old_password_required": "Please enter the old password",
+      "message_new_password_required": "Please enter a new password",
+      "message_password_confirmation_required": "Please enter confirm password",
+      "message_password_confirmation_diff": "Two password inputs are inconsistent"
+    },
+    "errors": {
+      "label_error": "Error",
+      "text_back_to_home": "Back to home"
+    }
+  },
+  "common": {
+    "text": {
+      "update_success": "Update success"
+    },
+    "buttons": {
+      "update": "Update"
+    }
+  }
+}
