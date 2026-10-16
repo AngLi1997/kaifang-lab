@@ -59,6 +59,15 @@ export const basicRoutes = [
     isHidden: true,
   },
   {
+    name: 'Authorize',
+    path: '/authorize',
+    component: () => import('@/views/authorize/index.vue'),
+    isHidden: true,
+    meta: {
+      title: '授权登录',
+    },
+  },
+  {
     name: 'Login',
     path: '/login',
     component: () => import('@/views/login/index.vue'),

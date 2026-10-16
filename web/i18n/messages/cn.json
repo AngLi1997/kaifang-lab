@@ -15,9 +15,9 @@
       "message_verifying": "正在验证...",
       "message_login_success": "登录成功",
       "platform_descriptor": "智能体服务端能力平台",
-      "platform_label": "KAIFANGWORK · 服务平台",
+      "platform_label": "KaifangHarness · 服务平台",
       "intro_title": "面向智能体体系的\n服务端基础能力",
-      "intro_description": "统一维护账号身份、访问权限与组织资源，为 KaifangWork 提供稳定、可追溯的服务支撑。",
+      "intro_description": "统一维护账号身份、访问权限与组织资源，为 KaifangHarness 提供稳定、可追溯的服务支撑。",
       "capability_identity": "身份认证与角色授权",
       "capability_organization": "组织架构与资源管理",
       "capability_audit": "管理操作审计留痕",
@@ -29,15 +29,15 @@
       "label_password": "登录密码",
       "placeholder_password": "请输入登录密码",
       "security_note": "平台访问受权限策略保护，请妥善保管账号凭据。",
-      "footer_brand": "KaifangLab · KaifangWork 服务端能力平台",
+      "footer_brand": "KaifangLab · KaifangHarness 服务端能力平台",
       "footer_capabilities": "统一身份 · 权限控制 · 审计追溯"
     },
     "workbench": {
       "label_workbench": "工作台",
-      "platform_label": "KAIFANGWORK · 服务平台",
-      "title": "KaifangWork 服务端能力平台",
+      "platform_label": "KaifangHarness · 服务平台",
+      "title": "KaifangHarness 服务端能力平台",
       "text_hello": "当前用户 · {username}",
-      "text_welcome": "为 KaifangWork 自研智能体提供统一的身份认证、访问控制、组织管理与审计能力。",
+      "text_welcome": "为 KaifangHarness 自研智能体提供统一的身份认证、访问控制、组织管理与审计能力。",
       "label_overview": "平台概况",
       "label_capabilities": "平台能力",
       "label_identity": "身份与权限",
@@ -46,7 +46,7 @@
       "text_organization": "统一管理部门结构、菜单资源与管理端配置。",
       "label_audit": "审计与追溯",
       "text_audit": "记录关键管理操作，支持按需查询与核验。",
-      "text_boundary": "KaifangLab 提供平台级服务端管理能力；智能体运行与任务编排由 KaifangWork 负责。"
+      "text_boundary": "KaifangLab 提供平台级服务端管理能力；智能体运行与任务编排由 KaifangHarness 负责。"
     },
     "profile": {
       "label_profile": "个人中心",
@@ -72,6 +72,19 @@
     "errors": {
       "label_error": "错误页",
       "text_back_to_home": "返回首页"
+    },
+    "authorize": {
+      "title": "授权 KaifangHarness 登录",
+      "description": "KaifangHarness 桌面端请求使用以下 KaifangLab 账号登录。",
+      "loading": "正在读取账号…",
+      "allow": "授权并返回 KaifangHarness",
+      "deny": "取消",
+      "not_you": "不是你的账号？",
+      "switch_account": "切换账号",
+      "finished_title": "已返回 KaifangHarness",
+      "finished_description": "可以关闭此页面并回到 KaifangHarness 继续操作。",
+      "invalid_title": "授权链接无效",
+      "invalid_description": "请回到 KaifangHarness 重新点击登录。"
     }
   },
   "common": {

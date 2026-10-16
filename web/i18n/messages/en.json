@@ -15,9 +15,9 @@
       "message_verifying": "Verifying...",
       "message_login_success": "Login successful",
       "platform_descriptor": "Agent Server Capability Platform",
-      "platform_label": "KAIFANGWORK · SERVICE PLATFORM",
+      "platform_label": "KaifangHarness · SERVICE PLATFORM",
       "intro_title": "Foundational server\ncapabilities for agents",
-      "intro_description": "Centrally manage identities, access permissions, and organizational resources for reliable, traceable KaifangWork services.",
+      "intro_description": "Centrally manage identities, access permissions, and organizational resources for reliable, traceable KaifangHarness services.",
       "capability_identity": "Identity and role authorization",
       "capability_organization": "Organization and resource management",
       "capability_audit": "Administrative audit trail",
@@ -29,15 +29,15 @@
       "label_password": "Password",
       "placeholder_password": "Enter your password",
       "security_note": "Access is governed by platform permissions. Keep your credentials secure.",
-      "footer_brand": "KaifangLab · KaifangWork server platform",
+      "footer_brand": "KaifangLab · KaifangHarness server platform",
       "footer_capabilities": "Identity · Access control · Audit trail"
     },
     "workbench": {
       "label_workbench": "Workbench",
-      "platform_label": "KAIFANGWORK · SERVICE PLATFORM",
-      "title": "KaifangWork Server Capability Platform",
+      "platform_label": "KaifangHarness · SERVICE PLATFORM",
+      "title": "KaifangHarness Server Capability Platform",
       "text_hello": "Current user · {username}",
-      "text_welcome": "Foundational identity, access control, organization, and audit capabilities for the KaifangWork agent platform.",
+      "text_welcome": "Foundational identity, access control, organization, and audit capabilities for the KaifangHarness agent platform.",
       "label_overview": "PLATFORM OVERVIEW",
       "label_capabilities": "Platform capabilities",
       "label_identity": "Identity and access",
@@ -46,7 +46,7 @@
       "text_organization": "Maintain department structure, menu resources, and console configuration.",
       "label_audit": "Audit and traceability",
       "text_audit": "Record key administrative actions for review and verification.",
-      "text_boundary": "KaifangLab provides platform-level server management. Agent execution and task orchestration are handled by KaifangWork."
+      "text_boundary": "KaifangLab provides platform-level server management. Agent execution and task orchestration are handled by KaifangHarness."
     },
     "profile": {
       "label_profile": "Profile",
@@ -72,6 +72,19 @@
     "errors": {
       "label_error": "Error",
       "text_back_to_home": "Back to home"
+    },
+    "authorize": {
+      "title": "Sign in to KaifangHarness",
+      "description": "KaifangHarness Desktop is requesting to sign in with this KaifangLab account.",
+      "loading": "Loading account…",
+      "allow": "Authorize and return to KaifangHarness",
+      "deny": "Cancel",
+      "not_you": "Not your account?",
+      "switch_account": "Switch account",
+      "finished_title": "Returned to KaifangHarness",
+      "finished_description": "You can close this page and continue in KaifangHarness.",
+      "invalid_title": "Invalid authorization link",
+      "invalid_description": "Return to KaifangHarness and click Sign in again."
     }
   },
   "common": {
