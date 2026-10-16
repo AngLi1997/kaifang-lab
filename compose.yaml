@@ -2,7 +2,7 @@ name: kaifanglab
 
 services:
   postgres:
-    image: postgres:16-alpine
+    image: pgvector/pgvector:pg17
     environment:
       POSTGRES_DB: kaifang
       POSTGRES_USER: kaifang
@@ -18,7 +18,7 @@ services:
       retries: 10
 
   redis:
-    image: redis:7-alpine
+    image: redis:latest
     ports:
       - "6379:6379"
     volumes:
