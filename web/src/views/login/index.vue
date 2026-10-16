@@ -1,75 +1,49 @@
 <template>
   <AppPage :show-footer="false">
     <main class="login-page">
-      <div class="login-frame">
-        <header class="login-brand">
-          <div class="login-brand__identity">
-            <img :src="logoUrl" alt="" />
-            <span>{{ $t('app_name') }}</span>
-          </div>
-          <span class="login-brand__descriptor">{{ $t('views.login.platform_descriptor') }}</span>
-        </header>
+      <section class="login-card">
+        <div class="login-brand">
+          <img :src="logoUrl" alt="" />
+          <h1>{{ $t('app_name') }}</h1>
+        </div>
 
-        <section class="login-card">
-          <div class="login-intro">
-            <span class="login-intro__eyebrow">{{ $t('views.login.platform_label') }}</span>
-            <h1>{{ $t('views.login.intro_title') }}</h1>
-            <p>{{ $t('views.login.intro_description') }}</p>
+        <form class="login-form" @submit.prevent="handleLogin">
+          <h2 class="login-form__heading">{{ $t('views.login.heading') }}</h2>
 
-            <ul class="login-capabilities">
-              <li><span>01</span> {{ $t('views.login.capability_identity') }}</li>
-              <li><span>02</span> {{ $t('views.login.capability_organization') }}</li>
-              <li><span>03</span> {{ $t('views.login.capability_audit') }}</li>
-            </ul>
-          </div>
-
-          <form class="login-form" @submit.prevent="handleLogin">
-            <div class="login-form__heading">
-              <span>{{ $t('views.login.entry_label') }}</span>
-              <h2>{{ $t('views.login.heading') }}</h2>
-              <p>{{ $t('views.login.prompt') }}</p>
-            </div>
-
-            <label class="login-field">
-              <span>{{ $t('views.login.label_username') }}</span>
-              <n-input
-                v-model:value="loginInfo.username"
-                autofocus
-                size="large"
-                :placeholder="$t('views.login.placeholder_username')"
-                :maxlength="20"
-              />
-            </label>
-            <label class="login-field">
-              <span>{{ $t('views.login.label_password') }}</span>
-              <n-input
-                v-model:value="loginInfo.password"
-                size="large"
-                type="password"
-                show-password-on="mousedown"
-                :placeholder="$t('views.login.placeholder_password')"
-                :maxlength="128"
-              />
-            </label>
-
-            <n-button
-              class="login-submit"
+          <label class="login-field">
+            <span>{{ $t('views.login.label_username') }}</span>
+            <n-input
+              v-model:value="loginInfo.username"
+              autofocus
               size="large"
-              type="primary"
-              :loading="loading"
-              attr-type="submit"
-            >
-              {{ $t('views.login.text_login') }}
-            </n-button>
-            <p class="login-form__note">{{ $t('views.login.security_note') }}</p>
-          </form>
-        </section>
+              :placeholder="$t('views.login.placeholder_username')"
+              :maxlength="20"
+            />
+          </label>
+          <label class="login-field">
+            <span>{{ $t('views.login.label_password') }}</span>
+            <n-input
+              v-model:value="loginInfo.password"
+              size="large"
+              type="password"
+              show-password-on="mousedown"
+              :placeholder="$t('views.login.placeholder_password')"
+              :maxlength="128"
+            />
+          </label>
 
-        <footer class="login-footer">
-          <span>{{ $t('views.login.footer_brand') }}</span>
-          <span>{{ $t('views.login.footer_capabilities') }}</span>
-        </footer>
-      </div>
+          <n-button
+            class="login-submit"
+            size="large"
+            type="primary"
+            :loading="loading"
+            attr-type="submit"
+          >
+            {{ $t('views.login.text_login') }}
+          </n-button>
+          <p class="login-form__note">{{ $t('views.login.security_note') }}</p>
+        </form>
+      </section>
     </main>
   </AppPage>
 </template>
@@ -142,121 +116,40 @@ async function handleLogin() {
     linear-gradient(135deg, #f5f3f0 0%, #efeeeb 100%);
 }
 
-.login-frame {
-  display: flex;
-  width: min(1080px, 100%);
-  min-height: 560px;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 28px;
-  margin: auto;
-}
-
-.login-brand,
-.login-brand__identity,
-.login-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.login-brand__identity {
-  justify-content: flex-start;
-  gap: 12px;
-  color: #282525;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.login-brand__identity img {
-  width: 38px;
-  height: 38px;
-  border-radius: 5px;
-}
-
-.login-brand__descriptor,
-.login-intro__eyebrow {
-  color: #887d78;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-}
-
 .login-card {
   display: grid;
+  width: min(1080px, 100%);
   grid-template-columns: 1.05fr 0.85fr;
   overflow: hidden;
+  margin: auto;
   border: 1px solid #e6e0dc;
   border-radius: 8px;
   background: #fff;
   box-shadow: 0 18px 55px rgba(48, 37, 33, 0.07);
 }
 
-.login-intro {
-  position: relative;
+.login-brand {
   display: flex;
-  min-height: 470px;
-  flex-direction: column;
+  min-height: 520px;
+  align-items: center;
   justify-content: center;
+  gap: 24px;
   padding: 58px 60px;
   background: linear-gradient(145deg, #faf8f6 0%, #f3efeb 100%);
 }
 
-.login-intro::after {
-  position: absolute;
-  right: 42px;
-  bottom: 44px;
-  width: 100px;
-  height: 100px;
-  border: 1px solid rgba(143, 36, 40, 0.1);
-  border-radius: 50%;
-  content: '';
+.login-brand img {
+  width: 96px;
+  height: 96px;
+  border-radius: 12px;
 }
 
-.login-intro__eyebrow {
-  color: #8f2428;
-}
-
-.login-intro h1 {
-  margin: 22px 0 14px;
-  color: #282525;
-  font-size: clamp(28px, 3vw, 38px);
-  font-weight: 650;
-  letter-spacing: 0.02em;
-  line-height: 1.45;
-  white-space: pre-line;
-}
-
-.login-intro p {
-  max-width: 430px;
+.login-brand h1 {
   margin: 0;
-  color: #716966;
-  font-size: 14px;
-  line-height: 1.9;
-}
-
-.login-capabilities {
-  display: grid;
-  gap: 17px;
-  margin: 42px 0 0;
-  padding: 0;
-  color: #4e4946;
-  font-size: 13px;
-  list-style: none;
-}
-
-.login-capabilities li {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.login-capabilities li span {
-  color: #9b7772;
-  font-size: 11px;
+  color: #282525;
+  font-size: clamp(36px, 4vw, 52px);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
 }
 
 .login-form {
@@ -267,28 +160,10 @@ async function handleLogin() {
 }
 
 .login-form__heading {
-  margin-bottom: 30px;
-}
-
-.login-form__heading > span {
-  color: #8f2428;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.login-form__heading h2 {
-  margin: 12px 0 8px;
+  margin: 0 0 30px;
   color: #282525;
   font-size: 24px;
   font-weight: 650;
-}
-
-.login-form__heading p,
-.login-form__note {
-  margin: 0;
-  color: #8b8581;
-  font-size: 12px;
-  line-height: 1.7;
 }
 
 .login-field {
@@ -306,14 +181,11 @@ async function handleLogin() {
 }
 
 .login-form__note {
-  margin-top: 15px;
-  text-align: center;
-}
-
-.login-footer {
+  margin: 15px 0 0;
   color: #8b8581;
-  font-size: 11px;
-  letter-spacing: 0.02em;
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: center;
 }
 
 @media (max-width: 760px) {
@@ -321,32 +193,23 @@ async function handleLogin() {
     padding: 24px 16px;
   }
 
-  .login-frame {
-    min-height: 0;
-  }
-
-  .login-brand__descriptor,
-  .login-intro::after,
-  .login-capabilities {
-    display: none;
-  }
-
   .login-card {
     grid-template-columns: 1fr;
   }
 
-  .login-intro {
+  .login-brand {
     min-height: 0;
-    padding: 30px 28px 26px;
+    gap: 16px;
+    padding: 32px 28px;
   }
 
-  .login-intro h1 {
-    margin: 12px 0 8px;
-    font-size: 25px;
+  .login-brand img {
+    width: 56px;
+    height: 56px;
   }
 
-  .login-intro p {
-    font-size: 12px;
+  .login-brand h1 {
+    font-size: 30px;
   }
 
   .login-form {
@@ -355,12 +218,6 @@ async function handleLogin() {
 
   .login-form__heading {
     margin-bottom: 22px;
-  }
-
-  .login-footer {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 6px;
   }
 }
 </style>
