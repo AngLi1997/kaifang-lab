@@ -47,10 +47,10 @@ start: ## Starts the server
 	uv run python run.py
 
 .PHONY: services-up services-down
-services-up: ## Start PostgreSQL and Redis development services
-	docker compose up -d postgres redis
+services-up: ## Start PostgreSQL, Redis and MinIO development services
+	docker compose up -d postgres redis minio
 
-services-down: ## Stop PostgreSQL and Redis development services
+services-down: ## Stop PostgreSQL, Redis and MinIO development services
 	docker compose down
 
 # Check, lint and format targets

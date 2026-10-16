@@ -23,6 +23,7 @@ from app.core.exceptions import (
     request_validation_handler,
     response_validation_handler,
 )
+from app.core.storage import storage
 from app.log import logger
 from app.models.admin import Api, Menu, Role
 from app.schemas.menus import MenuType
@@ -47,6 +48,7 @@ def make_middlewares():
             methods=["GET", "POST", "PUT", "DELETE"],
             exclude_paths=[
                 "/api/v1/base/access_token",
+                "/api/v1/base/avatar/",
                 "/docs",
                 "/openapi.json",
             ],
@@ -226,3 +228,4 @@ async def init_data(app: FastAPI):
     await init_menus()
     await init_apis(app)
     await init_roles()
+    await storage.ensure_bucket()

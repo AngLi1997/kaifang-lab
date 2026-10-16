@@ -7,6 +7,7 @@ export default {
   getUserApi: () => request.get('/base/userapi'),
   // profile
   updatePassword: (data = {}) => request.post('/base/update_password', data),
+  uploadAvatar: (formData) => request.post('/base/avatar', formData, { timeout: 60000 }),
   // users
   getUserList: (params = {}) => request.get('/user/list', { params }),
   getUserById: (params = {}) => request.get('/user/get', { params }),
@@ -39,4 +40,10 @@ export default {
   deleteDept: (params = {}) => request.delete('/dept/delete', { params }),
   // auditlog
   getAuditLogList: (params = {}) => request.get('/auditlog/list', { params }),
+  // files
+  uploadFile: (formData) => request.post('/file/upload', formData, { timeout: 600000 }),
+  getFileList: (params = {}) => request.get('/file/list', { params }),
+  getFile: (params = {}) => request.get('/file/get', { params }),
+  getFilePresignedUrl: (params = {}) => request.get('/file/presigned_url', { params }),
+  deleteFile: (params = {}) => request.delete('/file/delete', { params }),
 }

@@ -2,12 +2,14 @@
 
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter
+from fastapi import APIRouter, File, Path, UploadFile
 
+from app.controllers.file import avatar_url, file_controller
 from app.controllers.user import user_controller
 from app.core.ctx import CTX_USER_ID
 from app.core.dependency import DEPEND_AUTH
 from app.models.admin import Api, Menu, Role, User
+from app.models.enums import FileCategory
 from app.schemas.base import Fail, Success
 from app.schemas.login import CredentialsSchema, JWTOut, JWTPayload
 from app.schemas.users import UpdatePassword
@@ -47,7 +49,7 @@ async def get_userinfo():
     user_id = CTX_USER_ID.get()
     user_obj = await user_controller.get(id=user_id)
     data = await user_obj.to_dict(exclude_fields=["password"])
-    data["avatar"] = "/favicon.png"
+    data["avatar"] = avatar_url(user_obj)
     return Success(data=data)
 
 
@@ -110,3 +112,18 @@ async def update_user_password(req_in: UpdatePassword):
     user.password = get_password_hash(req_in.new_password)
     await user.save()
     return Success(msg="修改成功")
+
+
+@router.post("/avatar", summary="上传头像", dependencies=[DEPEND_AUTH])
+async def upload_avatar(file: UploadFile = File(..., description="头像图片")):
+    """上传当前用户的头像并替换旧头像，返回新的头像地址。"""
+    user = await user_controller.get(id=CTX_USER_ID.get())
+    await file_controller.replace_avatar(user, file)
+    return Success(data={"avatar": avatar_url(user)})
+
+
+@router.get("/avatar/{file_id}", summary="查看头像")
+async def get_avatar(file_id: int = Path(..., description="头像文件ID")):
+    """返回头像图片；供 `<img>` 直接引用，因此不要求 token，且只提供头像分类的文件。"""
+    file_obj = await file_controller.model.get(id=file_id, category=FileCategory.AVATAR)
+    return await file_controller.stream(file_obj, inline=True, cache_control="public, max-age=86400")

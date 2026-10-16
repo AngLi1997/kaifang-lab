@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { NButton, NForm, NFormItem, NInput, NTabPane, NTabs, NImage } from 'naive-ui'
+import { NButton, NForm, NFormItem, NInput, NTabPane, NTabs, NImage, NUpload } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import CommonPage from '@/components/page/CommonPage.vue'
 import { useUserStore } from '@/store'
@@ -33,6 +33,23 @@ async function updateProfile() {
         isLoading.value = false
       })
   })
+}
+const isUploadingAvatar = ref(false)
+async function uploadAvatar({ file, onFinish, onError }) {
+  const formData = new FormData()
+  formData.append('file', file.file)
+  isUploadingAvatar.value = true
+  try {
+    const res = await api.uploadAvatar(formData)
+    infoForm.value.avatar = res.data.avatar
+    userStore.setUserInfo({ avatar: res.data.avatar })
+    $message.success(t('views.profile.message_avatar_updated'))
+    onFinish()
+  } catch {
+    onError()
+  } finally {
+    isUploadingAvatar.value = false
+  }
 }
 const infoFormRules = {
   username: [
@@ -134,7 +151,23 @@ function validatePasswordSame(rule, value) {
             class="w-400"
           >
             <NFormItem :label="$t('views.profile.label_avatar')" path="avatar">
-              <NImage width="100" :src="infoForm.avatar"></NImage>
+              <div class="flex items-center gap-16">
+                <NImage width="100" :src="infoForm.avatar"></NImage>
+                <div>
+                  <NUpload
+                    accept="image/png,image/jpeg,image/webp,image/gif"
+                    :show-file-list="false"
+                    :custom-request="uploadAvatar"
+                  >
+                    <NButton :loading="isUploadingAvatar">
+                      {{ $t('views.profile.button_upload_avatar') }}
+                    </NButton>
+                  </NUpload>
+                  <div class="mt-8 text-12 opacity-60">
+                    {{ $t('views.profile.text_avatar_hint') }}
+                  </div>
+                </div>
+              </div>
             </NFormItem>
             <NFormItem :label="$t('views.profile.label_username')" path="username">
               <NInput

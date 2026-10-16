@@ -13,6 +13,7 @@ KaifangLab provides shared server-side management and foundational capabilities 
 | Organization | Department and user administration |
 | Audit trail | Searchable records of key management requests |
 | Service administration | Menu resources and API permission catalog |
+| File storage | MinIO-backed avatar and attachment upload, download, and management |
 
 The backend exposes REST APIs, while the console manages platform configuration and permissions. Model inference and agent orchestration are handled by KaifangHarness and are outside this service's current delivery scope.
 
@@ -21,7 +22,8 @@ The backend exposes REST APIs, while the console manages platform configuration 
 - Backend: Python 3.12, FastAPI, Tortoise ORM
 - Console: Vue 3, Vite, Naive UI
 - Data: PostgreSQL by default, with SQLite available for local development
-- Local services: PostgreSQL and Redis through Docker Compose
+- File storage: MinIO object storage; see [docs/file-storage.md](docs/file-storage.md) (Chinese)
+- Local services: PostgreSQL, Redis, and MinIO through Docker Compose
 
 ## Run locally
 
@@ -31,12 +33,12 @@ Install Docker and [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 ```sh
 cp .env.example .env
-docker compose up -d postgres redis
+docker compose up -d postgres redis minio
 uv sync
 uv run python run.py
 ```
 
-The API listens at `http://localhost:9999`; interactive API documentation is available at `http://localhost:9999/docs`. Database settings are documented in `.env.example`. Set `DB_BACKEND=sqlite` to use a local SQLite database.
+The API listens at `http://localhost:9999`; interactive API documentation is available at `http://localhost:9999/docs`. Database and MinIO settings are documented in `.env.example`. Set `DB_BACKEND=sqlite` to use a local SQLite database. The backend creates the `MINIO_DEFAULT_BUCKET` bucket on startup; the MinIO console is at `http://localhost:9001`. Upload APIs, object key layout, and permissions are described in [docs/file-storage.md](docs/file-storage.md).
 
 ### Console
 
@@ -60,7 +62,7 @@ Build the application image from the repository root:
 docker build -t kaifanglab:0.1.0 .
 ```
 
-Configure the PostgreSQL address and credentials, JWT secret, debug mode, and allowed origins for deployment. Use dedicated production secrets and database credentials, set `DEBUG=false`, and restrict `CORS_ORIGINS` to the console's actual domain.
+Configure the PostgreSQL address and credentials, MinIO endpoint and credentials, JWT secret, debug mode, and allowed origins for deployment. Use dedicated production secrets and database credentials, set `DEBUG=false`, and restrict `CORS_ORIGINS` to the console's actual domain.
 
 ## Repository layout
 
@@ -68,5 +70,7 @@ Configure the PostgreSQL address and credentials, JWT secret, debug mode, and al
 app/          FastAPI APIs, business logic, data models, and settings
 migrations/   Database migrations generated at runtime
 deploy/       Web server and container entrypoint configuration
+docs/         Topic guides such as file storage
+tests/        Backend tests
 web/          Vue administration console
 ```

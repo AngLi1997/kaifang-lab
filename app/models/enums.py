@@ -25,3 +25,10 @@ class MethodType(StrEnum):
     PUT = "PUT"
     DELETE = "DELETE"
     PATCH = "PATCH"
+
+
+class FileCategory(StrEnum):
+    """文件分类，同时作为对象键的第一级目录。"""
+
+    AVATAR = "avatar"
+    ATTACHMENT = "attachment"

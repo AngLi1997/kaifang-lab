@@ -6,12 +6,12 @@
 
 ## 开发、构建与检查命令
 
-- `docker compose up -d postgres redis`：启动本地数据库服务。
+- `docker compose up -d postgres redis minio`：启动本地数据库与 MinIO 文件存储服务；文件存储方案见 `docs/file-storage.md`。
 - `uv sync`：安装后端依赖；`uv run python run.py`：启动后端。
 - 在 `web/` 目录运行 `pnpm i` 安装前端依赖，运行 `pnpm dev` 启动 Vite。
 - 在 `web/` 目录运行 `pnpm build` 构建前端，运行 `pnpm lint` 执行 ESLint。
 - `make check`：检查 Python 格式并运行 Ruff；`make format`：使用 Black 和 isort 格式化代码。
-- `make test`：运行 pytest，需要本地 `.env`。仓库目前没有已提交的测试文件；新增后端测试请放在 `tests/`，文件名使用 `test_*.py`。
+- `make test`：运行 pytest，需要本地 `.env`。后端测试放在 `tests/`，文件名使用 `test_*.py`。
 
 ## 代码风格与命名
 

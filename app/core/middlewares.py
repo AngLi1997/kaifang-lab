@@ -67,18 +67,19 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
         self.max_body_size = 1024 * 1024  # 1MB 响应体大小限制
 
     async def get_request_args(self, request: Request) -> dict:
-        """合并查询参数与 JSON 或表单请求体；上传文件只记录文件名。"""
+        """合并查询参数与 JSON 或表单请求体；`multipart/form-data` 请求体不记录，上传的文件元数据见 `File` 表。"""
         args = {}
         # 获取查询参数
         for key, value in request.query_params.items():
             args[key] = value
 
-        # 获取请求体
-        if request.method in ["POST", "PUT", "PATCH"]:
+        # 获取请求体；multipart 上传不读取，避免把整个文件缓存进内存
+        content_type = request.headers.get("content-type", "")
+        if request.method in ["POST", "PUT", "PATCH"] and not content_type.startswith("multipart/form-data"):
             try:
                 body = await request.json()
                 args.update(body)
-            except json.JSONDecodeError:
+            except ValueError:
                 try:
                     body = await request.form()
                     # args.update(body)
@@ -96,7 +97,9 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
         return args
 
     async def get_response_body(self, request: Request, response: Response) -> Any:
-        """读取响应体用于记录；流式响应读取后会重新填充 `body_iterator`。"""
+        """读取 JSON 响应体用于记录；流式响应读取后会重新填充 `body_iterator`，非 JSON 响应（如文件下载）不记录。"""
+        if not response.headers.get("content-type", "").startswith("application/json"):
+            return None
         # 检查Content-Length
         content_length = response.headers.get("content-length")
         if content_length and int(content_length) > self.max_body_size:

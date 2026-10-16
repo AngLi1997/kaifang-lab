@@ -37,6 +37,15 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = "kaifang"
     POSTGRES_DB: str = "kaifang"
 
+    MINIO_ENDPOINT: str = "127.0.0.1:9000"
+    MINIO_ACCESS_KEY: str = "miniokaifang"
+    MINIO_SECRET_KEY: str = "miniokaifang"
+    MINIO_SECURE: bool = False
+    MINIO_DEFAULT_BUCKET: str = "kaifang-lab"
+    FILE_MAX_SIZE_MB: int = 100
+    AVATAR_MAX_SIZE_MB: int = 2
+    AVATAR_ALLOWED_TYPES: typing.List[str] = ["image/png", "image/jpeg", "image/webp", "image/gif"]
+
     DATETIME_FORMAT: str = "%Y-%m-%d %H:%M:%S"
 
     @property

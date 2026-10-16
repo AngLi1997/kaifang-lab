@@ -27,6 +27,7 @@ loguru==0.7.3
 markdown-it-py==3.0.0
 markupsafe==3.0.2
 mdurl==0.1.2
+minio==7.2.20
 mypy-extensions==1.0.0
 orjson==3.10.14
 packaging==24.2
@@ -34,6 +35,7 @@ passlib==1.7.4
 pathspec==0.12.1
 platformdirs==4.3.6
 pycparser==2.22
+pycryptodome==4.0.0
 pydantic==2.10.5
 pydantic-core==2.27.2
 pydantic-settings==2.7.1
@@ -55,6 +57,7 @@ tortoise-orm==0.23.0
 typer==0.15.1
 typing-extensions==4.12.2
 ujson==5.10.0
+urllib3==2.8.0
 uvicorn==0.34.0
 uvloop==0.21.0; sys_platform != 'win32'
 watchfiles==1.0.4

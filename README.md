@@ -13,6 +13,7 @@ KaifangLab 为 KaifangHarness（自研智能体）提供统一的服务端管理
 | 组织管理 | 部门和用户信息维护 |
 | 审计留痕 | 记录管理端关键请求，支持查询与追溯 |
 | 服务管理 | 维护菜单资源及 API 权限目录 |
+| 文件存储 | 基于 MinIO 的头像与附件上传、下载和管理 |
 
 后端提供 REST API，管理端用于维护平台配置与权限。智能体的模型推理和任务编排由 KaifangHarness 负责，不属于本服务当前交付范围。
 
@@ -21,7 +22,8 @@ KaifangLab 为 KaifangHarness（自研智能体）提供统一的服务端管理
 - 后端：Python 3.12、FastAPI、Tortoise ORM
 - 管理端：Vue 3、Vite、Naive UI
 - 数据：PostgreSQL（默认）或 SQLite
-- 本地依赖：Docker Compose 提供 PostgreSQL 与 Redis 服务
+- 文件存储：MinIO（对象存储，详见 [docs/file-storage.md](docs/file-storage.md)）
+- 本地依赖：Docker Compose 提供 PostgreSQL、Redis 与 MinIO 服务
 
 ## 本地运行
 
@@ -33,15 +35,15 @@ KaifangLab 为 KaifangHarness（自研智能体）提供统一的服务端管理
 Copy-Item .env.example .env
 ```
 
-macOS/Linux 使用 `cp .env.example .env`。随后启动数据库并运行服务：
+macOS/Linux 使用 `cp .env.example .env`。随后启动数据库、MinIO 并运行服务：
 
 ```sh
-docker compose up -d postgres redis
+docker compose up -d postgres redis minio
 uv sync
 uv run python run.py
 ```
 
-服务默认监听 `http://localhost:9999`，接口文档位于 `http://localhost:9999/docs`。PostgreSQL 连接参数见 `.env.example`；将 `DB_BACKEND` 设为 `sqlite` 可使用本地 SQLite。
+服务默认监听 `http://localhost:9999`，接口文档位于 `http://localhost:9999/docs`。PostgreSQL 与 MinIO 连接参数见 `.env.example`；将 `DB_BACKEND` 设为 `sqlite` 可使用本地 SQLite。后端启动时会自动创建 `MINIO_DEFAULT_BUCKET` 桶；MinIO 控制台位于 `http://localhost:9001`。文件上传接口、对象路径规则和权限说明见 [文件存储](docs/file-storage.md)。
 
 ### 管理端
 
@@ -65,7 +67,7 @@ pnpm dev
 docker build -t kaifanglab:0.1.0 .
 ```
 
-部署时配置 PostgreSQL 地址、数据库凭据、JWT 密钥、调试模式和允许的跨域来源。生产环境应使用独立密钥与数据库账号，并将 `DEBUG` 设为 `false`、将 `CORS_ORIGINS` 限定为实际管理端域名。
+部署时配置 PostgreSQL 地址、数据库凭据、MinIO 地址与凭据、JWT 密钥、调试模式和允许的跨域来源。生产环境应使用独立密钥与数据库账号，并将 `DEBUG` 设为 `false`、将 `CORS_ORIGINS` 限定为实际管理端域名。
 
 ## 仓库结构
 
@@ -73,5 +75,7 @@ docker build -t kaifanglab:0.1.0 .
 app/          FastAPI 接口、业务逻辑、数据模型与配置
 migrations/   数据库迁移文件（运行时生成）
 deploy/       Web 服务与容器入口配置
+docs/         专题文档（文件存储等）
+tests/        后端测试
 web/          Vue 管理端
 ```

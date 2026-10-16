@@ -64,6 +64,9 @@ dependencies = [
     "ujson==5.10.0",
     "watchfiles==1.0.4",
     "websockets==14.1",
+    "minio==7.2.20",
+    "pycryptodome==4.0.0",
+    "urllib3==2.8.0",
     "pyproject-toml>=0.1.0",
     "uvloop==0.21.0 ; sys_platform != 'win32'",
 ]
@@ -104,3 +107,8 @@ disable = ["too-few-public-methods"]
 tortoise_orm = "app.settings.TORTOISE_ORM"
 location = "./migrations"
 src_folder = "./."
+
+[dependency-groups]
+dev = [
+    "pytest==8.3.5",
+]
