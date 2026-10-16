@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     VERSION: str = "0.1.0"
     APP_TITLE: str = "KaifangLab"
     PROJECT_NAME: str = "KaifangLab"
-    APP_DESCRIPTION: str = "KaifangLab provides foundational service capabilities for KaifangWork agents."
+    APP_DESCRIPTION: str = "KaifangLab provides foundational service capabilities for KaifangHarness agents."
 
     CORS_ORIGINS: typing.List = ["*"]
     CORS_ALLOW_CREDENTIALS: bool = True

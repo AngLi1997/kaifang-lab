@@ -1,8 +1,8 @@
 # KaifangLab
 
-**Server capabilities for KaifangWork agents**
+**Server capabilities for KaifangHarness agents**
 
-KaifangLab provides shared server-side management and foundational capabilities for KaifangWork, our in-house agent platform. Its current scope covers identity, role and API permissions, organizational units, menu resources, and audit logs.
+KaifangLab provides shared server-side management and foundational capabilities for KaifangHarness, our in-house agent platform. Its current scope covers identity, role and API permissions, organizational units, menu resources, and audit logs.
 
 ## Delivery scope
 
@@ -14,7 +14,7 @@ KaifangLab provides shared server-side management and foundational capabilities 
 | Audit trail | Searchable records of key management requests |
 | Service administration | Menu resources and API permission catalog |
 
-The backend exposes REST APIs, while the console manages platform configuration and permissions. Model inference and agent orchestration are handled by KaifangWork and are outside this service's current delivery scope.
+The backend exposes REST APIs, while the console manages platform configuration and permissions. Model inference and agent orchestration are handled by KaifangHarness and are outside this service's current delivery scope.
 
 ## Technology
 

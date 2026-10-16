@@ -1,7 +1,7 @@
 [project]
 name = "kaifanglab-server"
 version = "0.1.0"
-description = "KaifangLab server capabilities for KaifangWork agents"
+description = "KaifangLab server capabilities for KaifangHarness agents"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "fastapi==0.111.0",
