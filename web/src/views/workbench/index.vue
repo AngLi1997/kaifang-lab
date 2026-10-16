@@ -36,7 +36,7 @@ function greetingKey(hour) {
 }
 
 const greeting = computed(() =>
-  t(`views.workbench.${greetingKey(now.value.getHours())}`, { username: userStore.name })
+  t(`views.workbench.${greetingKey(now.value.getHours())}`, { username: userStore.nickname })
 )
 </script>
 
