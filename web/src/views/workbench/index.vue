@@ -1,43 +1,10 @@
 <template>
   <AppPage :show-footer="false">
     <main class="workbench">
-      <section class="workbench-hero">
-        <div class="workbench-hero__copy">
-          <span class="workbench-eyebrow">{{ $t('views.workbench.platform_label') }}</span>
-          <h1>{{ $t('views.workbench.title') }}</h1>
-          <p>{{ $t('views.workbench.text_welcome') }}</p>
-          <div class="workbench-user">
-            <img :src="userStore.avatar" alt="" />
-            <span>{{ $t('views.workbench.text_hello', { username: userStore.name }) }}</span>
-          </div>
-        </div>
-        <div class="workbench-mark" aria-hidden="true">
-          <img src="/favicon.png" alt="" />
-          <span>KAIFANGLAB</span>
-        </div>
-      </section>
-
-      <section class="workbench-capabilities">
-        <header class="workbench-section-heading">
-          <div>
-            <span>{{ $t('views.workbench.label_overview') }}</span>
-            <h2>{{ $t('views.workbench.label_capabilities') }}</h2>
-          </div>
-          <span class="workbench-section-heading__note">KaifangLab · v{{ version }}</span>
-        </header>
-
-        <div class="capability-grid">
-          <article v-for="item in capabilityData" :key="item.index" class="capability-card">
-            <span class="capability-card__index">{{ item.index }}</span>
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.description }}</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="workbench-boundary">
-        <span class="workbench-boundary__mark"></span>
-        <p>{{ $t('views.workbench.text_boundary') }}</p>
+      <section class="workbench-greeting">
+        <span class="workbench-greeting__accent" aria-hidden="true"></span>
+        <h1>{{ greeting }}</h1>
+        <img class="workbench-greeting__mark" src="/favicon.png" alt="" aria-hidden="true" />
       </section>
     </main>
   </AppPage>
@@ -48,229 +15,127 @@ import { useUserStore } from '@/store'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({ useScope: 'global' })
-const version = import.meta.env.VITE_APP_VERSION || '0.1.0'
-
-const capabilityData = computed(() => [
-  {
-    index: '01',
-    title: t('views.workbench.label_identity'),
-    description: t('views.workbench.text_identity'),
-  },
-  {
-    index: '02',
-    title: t('views.workbench.label_organization'),
-    description: t('views.workbench.text_organization'),
-  },
-  {
-    index: '03',
-    title: t('views.workbench.label_audit'),
-    description: t('views.workbench.text_audit'),
-  },
-])
-
 const userStore = useUserStore()
+
+const now = ref(new Date())
+let timer
+onMounted(() => {
+  timer = setInterval(() => {
+    now.value = new Date()
+  }, 60 * 1000)
+})
+onBeforeUnmount(() => clearInterval(timer))
+
+/** Maps the local hour to a greeting period: 5–8 / 8–11 / 11–13 / 13–18 / 18–5. */
+function greetingKey(hour) {
+  if (hour >= 5 && hour < 8) return 'greeting_early_morning'
+  if (hour >= 8 && hour < 11) return 'greeting_morning'
+  if (hour >= 11 && hour < 13) return 'greeting_noon'
+  if (hour >= 13 && hour < 18) return 'greeting_afternoon'
+  return 'greeting_evening'
+}
+
+const greeting = computed(() =>
+  t(`views.workbench.${greetingKey(now.value.getHours())}`, { username: userStore.name })
+)
 </script>
 
 <style scoped lang="scss">
 .workbench {
-  display: grid;
+  display: flex;
+  width: 100%;
   max-width: 1320px;
-  gap: 22px;
+  min-height: 100%;
   margin: 0 auto;
   padding: 12px 4px 28px;
 }
 
-.workbench-hero {
+.workbench-greeting {
+  position: relative;
   display: flex;
-  min-height: 230px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-  padding: 40px 46px;
-  border: 1px solid #e8e2de;
-  border-radius: 8px;
-  background: linear-gradient(110deg, #fff 0%, #fbf8f6 100%);
-}
-
-.workbench-hero__copy {
-  max-width: 760px;
-}
-
-.workbench-eyebrow {
-  color: #8f2428;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-}
-
-.workbench-hero h1 {
-  margin: 15px 0 9px;
-  color: #2a2725;
-  font-size: 28px;
-  font-weight: 650;
-  letter-spacing: 0.02em;
-}
-
-.workbench-hero p {
-  max-width: 700px;
-  margin: 0;
-  color: #706965;
-  font-size: 14px;
-  line-height: 1.9;
-}
-
-.workbench-user {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-top: 24px;
-  color: #57514e;
-  font-size: 12px;
-}
-
-.workbench-user img {
-  width: 26px;
-  height: 26px;
-  border: 1px solid #e9e2dd;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.workbench-mark {
-  display: flex;
-  min-width: 130px;
+  min-height: 420px;
+  flex: 1;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  color: #958983;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-}
-
-.workbench-mark img {
-  width: 76px;
-  height: 76px;
-  border-radius: 8px;
-}
-
-.workbench-capabilities {
-  padding: 28px 30px 30px;
+  justify-content: center;
+  overflow: hidden;
+  padding: 56px 64px;
   border: 1px solid #e8e2de;
   border-radius: 8px;
-  background: #fff;
+  background: radial-gradient(ellipse at 88% 20%, rgba(143, 36, 40, 0.06), transparent 42%),
+    linear-gradient(120deg, #fff 0%, #faf7f4 55%, #f3efeb 100%);
 }
 
-.workbench-section-heading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 22px;
-}
-
-.workbench-section-heading > div > span {
-  color: #8f2428;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.workbench-section-heading h2 {
-  margin: 7px 0 0;
-  color: #302b28;
-  font-size: 18px;
-  font-weight: 650;
-}
-
-.workbench-section-heading__note {
-  color: #948b86;
-  font-size: 11px;
-}
-
-.capability-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.capability-card {
-  min-height: 154px;
-  padding: 20px 22px;
-  border: 1px solid #eee9e5;
-  border-radius: 6px;
-  background: #fdfcfb;
-}
-
-.capability-card__index {
-  color: #a77a74;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-.capability-card h3 {
-  margin: 15px 0 7px;
-  color: #38322f;
-  font-size: 15px;
-  font-weight: 650;
-}
-
-.capability-card p {
-  margin: 0;
-  color: #79716c;
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-.workbench-boundary {
-  display: flex;
-  align-items: flex-start;
-  gap: 11px;
-  padding: 17px 20px;
-  border-left: 3px solid #8f2428;
-  background: #f1efed;
-}
-
-.workbench-boundary__mark {
-  width: 6px;
-  height: 6px;
-  flex: none;
-  margin-top: 7px;
+.workbench-greeting::before,
+.workbench-greeting::after {
+  position: absolute;
+  border: 1px solid rgba(143, 36, 40, 0.09);
   border-radius: 50%;
+  content: '';
+}
+
+.workbench-greeting::before {
+  right: -120px;
+  bottom: -160px;
+  width: 460px;
+  height: 460px;
+}
+
+.workbench-greeting::after {
+  right: -40px;
+  bottom: -80px;
+  width: 300px;
+  height: 300px;
+}
+
+.workbench-greeting__accent {
+  width: 36px;
+  height: 3px;
+  margin-bottom: 24px;
+  border-radius: 2px;
   background: #8f2428;
 }
 
-.workbench-boundary p {
+.workbench-greeting h1 {
+  position: relative;
+  z-index: 1;
   margin: 0;
-  color: #625b57;
-  font-size: 12px;
-  line-height: 1.8;
+  color: #282525;
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.workbench-greeting__mark {
+  position: absolute;
+  right: 72px;
+  bottom: 64px;
+  width: 88px;
+  height: 88px;
+  border-radius: 10px;
+  opacity: 0.12;
 }
 
 @media (max-width: 760px) {
-  .workbench-hero {
-    min-height: 0;
-    padding: 28px 24px;
+  .workbench-greeting {
+    min-height: 260px;
+    padding: 36px 28px;
   }
 
-  .workbench-mark {
-    display: none;
+  .workbench-greeting__accent {
+    margin-bottom: 18px;
   }
 
-  .workbench-hero h1 {
-    font-size: 23px;
+  .workbench-greeting h1 {
+    font-size: 28px;
   }
 
-  .workbench-capabilities {
-    padding: 22px 18px;
-  }
-
-  .capability-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .capability-card {
-    min-height: 0;
+  .workbench-greeting__mark {
+    right: 28px;
+    bottom: 28px;
+    width: 56px;
+    height: 56px;
   }
 }
 </style>

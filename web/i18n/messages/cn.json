@@ -23,19 +23,11 @@
     },
     "workbench": {
       "label_workbench": "工作台",
-      "platform_label": "KaifangHarness · 服务平台",
-      "title": "KaifangHarness 服务端能力平台",
-      "text_hello": "当前用户 · {username}",
-      "text_welcome": "为 KaifangHarness 自研智能体提供统一的身份认证、访问控制、组织管理与审计能力。",
-      "label_overview": "平台概况",
-      "label_capabilities": "平台能力",
-      "label_identity": "身份与权限",
-      "text_identity": "维护用户账号、角色授权和接口访问范围。",
-      "label_organization": "组织与资源",
-      "text_organization": "统一管理部门结构、菜单资源与管理端配置。",
-      "label_audit": "审计与追溯",
-      "text_audit": "记录关键管理操作，支持按需查询与核验。",
-      "text_boundary": "KaifangLab 提供平台级服务端管理能力；智能体运行与任务编排由 KaifangHarness 负责。"
+      "greeting_early_morning": "早上好，{username}",
+      "greeting_morning": "上午好，{username}",
+      "greeting_noon": "中午好，{username}",
+      "greeting_afternoon": "下午好，{username}",
+      "greeting_evening": "晚上好，{username}"
     },
     "profile": {
       "label_profile": "个人中心",
