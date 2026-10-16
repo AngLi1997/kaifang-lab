@@ -1,3 +1,5 @@
+"""部门管理路由。"""
+
 from fastapi import APIRouter
 
 from .depts import router

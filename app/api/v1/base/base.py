@@ -1,13 +1,15 @@
+"""登录与当前用户信息接口。"""
+
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter
 
 from app.controllers.user import user_controller
 from app.core.ctx import CTX_USER_ID
-from app.core.dependency import DependAuth
+from app.core.dependency import DEPEND_AUTH
 from app.models.admin import Api, Menu, Role, User
 from app.schemas.base import Fail, Success
-from app.schemas.login import *
+from app.schemas.login import CredentialsSchema, JWTOut, JWTPayload
 from app.schemas.users import UpdatePassword
 from app.settings import settings
 from app.utils.jwt_utils import create_access_token
@@ -19,6 +21,7 @@ HIDDEN_MENU_COMPONENTS = {"/system/api", "/top-menu"}
 
 @router.post("/access_token", summary="获取token")
 async def login_access_token(credentials: CredentialsSchema):
+    """校验用户名密码并签发访问令牌。"""
     user: User = await user_controller.authenticate(credentials)
     await user_controller.update_last_login(user.id)
     access_token_expires = timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -38,8 +41,9 @@ async def login_access_token(credentials: CredentialsSchema):
     return Success(data=data.model_dump())
 
 
-@router.get("/userinfo", summary="查看用户信息", dependencies=[DependAuth])
+@router.get("/userinfo", summary="查看用户信息", dependencies=[DEPEND_AUTH])
 async def get_userinfo():
+    """返回当前用户信息（不含密码）。"""
     user_id = CTX_USER_ID.get()
     user_obj = await user_controller.get(id=user_id)
     data = await user_obj.to_dict(exclude_fields=["password"])
@@ -47,8 +51,9 @@ async def get_userinfo():
     return Success(data=data)
 
 
-@router.get("/usermenu", summary="查看用户菜单", dependencies=[DependAuth])
+@router.get("/usermenu", summary="查看用户菜单", dependencies=[DEPEND_AUTH])
 async def get_user_menu():
+    """返回当前用户可见的两级菜单树。"""
     user_id = CTX_USER_ID.get()
     user_obj = await User.filter(id=user_id).first()
     menus: list[Menu] = []
@@ -76,8 +81,9 @@ async def get_user_menu():
     return Success(data=res)
 
 
-@router.get("/userapi", summary="查看用户API", dependencies=[DependAuth])
+@router.get("/userapi", summary="查看用户API", dependencies=[DEPEND_AUTH])
 async def get_user_api():
+    """返回当前用户可访问的 API，格式为小写方法加路径。"""
     user_id = CTX_USER_ID.get()
     user_obj = await User.filter(id=user_id).first()
     if user_obj.is_superuser:
@@ -93,8 +99,9 @@ async def get_user_api():
     return Success(data=apis)
 
 
-@router.post("/update_password", summary="修改密码", dependencies=[DependAuth])
+@router.post("/update_password", summary="修改密码", dependencies=[DEPEND_AUTH])
 async def update_user_password(req_in: UpdatePassword):
+    """校验旧密码后修改当前用户密码。"""
     user_id = CTX_USER_ID.get()
     user = await user_controller.get(user_id)
     verified = verify_password(req_in.old_password, user.password)

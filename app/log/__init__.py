@@ -1,1 +1,5 @@
-from .log import logger as logger
+"""应用日志。"""
+
+from .log import logger
+
+__all__ = ["logger"]

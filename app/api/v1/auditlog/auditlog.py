@@ -1,16 +1,18 @@
+"""审计日志查询接口。"""
+
 from datetime import datetime
+
 from fastapi import APIRouter, Query
 from tortoise.expressions import Q
 
 from app.models.admin import AuditLog
 from app.schemas import SuccessExtra
-from app.schemas.apis import *
 
 router = APIRouter()
 
 
 @router.get("/list", summary="查看操作日志")
-async def get_audit_log_list(
+async def get_audit_log_list(  # pylint: disable=too-many-arguments,too-many-positional-arguments
     page: int = Query(1, description="页码"),
     page_size: int = Query(10, description="每页数量"),
     username: str = Query("", description="操作人名称"),
@@ -22,6 +24,7 @@ async def get_audit_log_list(
     start_time: datetime = Query("", description="开始时间"),
     end_time: datetime = Query("", description="结束时间"),
 ):
+    """按条件分页查询审计日志，按创建时间倒序。"""
     q = Q()
     if username:
         q &= Q(username__icontains=username)

@@ -1,9 +1,13 @@
+"""统一的 JSON 响应类型。"""
+
 from typing import Any, Optional
 
 from fastapi.responses import JSONResponse
 
 
 class Success(JSONResponse):
+    """成功响应，响应体为 `code`/`msg`/`data` 以及额外关键字字段。"""
+
     def __init__(
         self,
         code: int = 200,
@@ -17,6 +21,8 @@ class Success(JSONResponse):
 
 
 class Fail(JSONResponse):
+    """失败响应，HTTP 状态码与 `code` 一致。"""
+
     def __init__(
         self,
         code: int = 400,
@@ -30,7 +36,9 @@ class Fail(JSONResponse):
 
 
 class SuccessExtra(JSONResponse):
-    def __init__(
+    """带分页信息（`total`/`page`/`page_size`）的成功响应。"""
+
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
         code: int = 200,
         msg: Optional[str] = None,

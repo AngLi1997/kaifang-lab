@@ -1,3 +1,5 @@
+"""应用启动流程：中间件、异常处理器、路由注册以及数据库与种子数据初始化。"""
+
 import shutil
 
 from aerich import Command
@@ -11,15 +13,15 @@ from app.controllers.api import api_controller
 from app.controllers.user import UserCreate, user_controller
 from app.core.exceptions import (
     DoesNotExist,
-    DoesNotExistHandle,
     HTTPException,
-    HttpExcHandle,
     IntegrityError,
-    IntegrityHandle,
     RequestValidationError,
-    RequestValidationHandle,
     ResponseValidationError,
-    ResponseValidationHandle,
+    does_not_exist_handler,
+    http_exc_handler,
+    integrity_handler,
+    request_validation_handler,
+    response_validation_handler,
 )
 from app.log import logger
 from app.models.admin import Api, Menu, Role
@@ -30,6 +32,7 @@ from .middlewares import BackGroundTaskMiddleware, HttpAuditLogMiddleware
 
 
 def make_middlewares():
+    """返回 CORS、后台任务和审计日志中间件列表。"""
     middleware = [
         Middleware(
             CORSMiddleware,
@@ -53,18 +56,21 @@ def make_middlewares():
 
 
 def register_exceptions(app: FastAPI):
-    app.add_exception_handler(DoesNotExist, DoesNotExistHandle)
-    app.add_exception_handler(HTTPException, HttpExcHandle)
-    app.add_exception_handler(IntegrityError, IntegrityHandle)
-    app.add_exception_handler(RequestValidationError, RequestValidationHandle)
-    app.add_exception_handler(ResponseValidationError, ResponseValidationHandle)
+    """为 `app` 注册全局异常处理器。"""
+    app.add_exception_handler(DoesNotExist, does_not_exist_handler)
+    app.add_exception_handler(HTTPException, http_exc_handler)
+    app.add_exception_handler(IntegrityError, integrity_handler)
+    app.add_exception_handler(RequestValidationError, request_validation_handler)
+    app.add_exception_handler(ResponseValidationError, response_validation_handler)
 
 
 def register_routers(app: FastAPI, prefix: str = "/api"):
+    """在 `prefix` 下挂载全部业务路由。"""
     app.include_router(api_router, prefix=prefix)
 
 
 async def init_superuser():
+    """用户表为空时创建默认超级管理员。"""
     user = await user_controller.model.exists()
     if not user:
         await user_controller.create_user(
@@ -79,6 +85,7 @@ async def init_superuser():
 
 
 async def init_menus():
+    """清理旧版菜单，并在菜单表为空时创建系统管理菜单。"""
     # Remove legacy menus so existing databases match the current navigation.
     await Menu.filter(
         Q(component__in=["/system/api", "/top-menu", "/error-page"])
@@ -160,13 +167,15 @@ async def init_menus():
         await Menu.bulk_create(children_menu)
 
 
-async def init_apis():
+async def init_apis(app: FastAPI):
+    """`Api` 表为空时按 `app` 的路由生成 API 记录。"""
     apis = await api_controller.model.exists()
     if not apis:
-        await api_controller.refresh_api()
+        await api_controller.refresh_api(app.routes)
 
 
 async def init_db():
+    """初始化 aerich 并执行待应用的数据库迁移。"""
     command = Command(tortoise_config=settings.TORTOISE_ORM)
     try:
         await command.init_db(safe=True)
@@ -185,6 +194,7 @@ async def init_db():
 
 
 async def init_roles():
+    """角色表为空时创建管理员和普通用户角色并分配权限。"""
     roles = await Role.exists()
     if not roles:
         admin_role = await Role.create(
@@ -209,9 +219,10 @@ async def init_roles():
         await user_role.apis.add(*basic_apis)
 
 
-async def init_data():
+async def init_data(app: FastAPI):
+    """按依赖顺序初始化数据库结构和全部种子数据。"""
     await init_db()
     await init_superuser()
     await init_menus()
-    await init_apis()
+    await init_apis(app)
     await init_roles()

@@ -1,3 +1,5 @@
+"""鉴权与权限校验的 FastAPI 依赖。"""
+
 from typing import Optional
 
 import jwt
@@ -9,8 +11,11 @@ from app.settings import settings
 
 
 class AuthControl:
+    """基于请求头 `token` 的身份认证。"""
+
     @classmethod
     async def is_authed(cls, token: str = Header(..., description="token验证")) -> Optional["User"]:
+        """校验 token 并返回当前用户，同时把用户 ID 写入请求上下文。"""
         try:
             if token == "dev":
                 user = await User.filter().first()
@@ -23,17 +28,20 @@ class AuthControl:
                 raise HTTPException(status_code=401, detail="Authentication failed")
             CTX_USER_ID.set(int(user_id))
             return user
-        except jwt.DecodeError:
-            raise HTTPException(status_code=401, detail="无效的Token")
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=401, detail="登录已过期")
+        except jwt.DecodeError as e:
+            raise HTTPException(status_code=401, detail="无效的Token") from e
+        except jwt.ExpiredSignatureError as e:
+            raise HTTPException(status_code=401, detail="登录已过期") from e
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"{repr(e)}")
+            raise HTTPException(status_code=500, detail=f"{repr(e)}") from e
 
 
 class PermissionControl:
+    """基于角色绑定 API 的访问控制。"""
+
     @classmethod
     async def has_permission(cls, request: Request, current_user: User = Depends(AuthControl.is_authed)) -> None:
+        """超级管理员直接放行；其他用户的角色须绑定当前请求的方法与路径。"""
         if current_user.is_superuser:
             return
         method = request.method
@@ -49,5 +57,5 @@ class PermissionControl:
             raise HTTPException(status_code=403, detail=f"Permission denied method:{method} path:{path}")
 
 
-DependAuth = Depends(AuthControl.is_authed)
-DependPermission = Depends(PermissionControl.has_permission)
+DEPEND_AUTH = Depends(AuthControl.is_authed)
+DEPEND_PERMISSION = Depends(PermissionControl.has_permission)

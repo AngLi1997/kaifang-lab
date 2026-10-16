@@ -1,3 +1,5 @@
+"""ORM 模型基类与通用字段 mixin。"""
+
 import asyncio
 from datetime import datetime
 
@@ -7,9 +9,12 @@ from app.settings import settings
 
 
 class BaseModel(models.Model):
+    """带自增主键并支持序列化为字典的抽象模型。"""
+
     id = fields.BigIntField(pk=True, index=True)
 
     async def to_dict(self, m2m: bool = False, exclude_fields: list[str] | None = None):
+        """把字段序列化为字典，日期按 `settings.DATETIME_FORMAT` 格式化；`m2m` 为真时包含多对多字段。"""
         if exclude_fields is None:
             exclude_fields = []
 
@@ -54,9 +59,13 @@ class BaseModel(models.Model):
 
 
 class UUIDModel:
+    """提供唯一 `uuid` 字段的 mixin。"""
+
     uuid = fields.UUIDField(unique=True, pk=False, index=True)
 
 
 class TimestampMixin:
+    """提供 `created_at`、`updated_at` 字段的 mixin。"""
+
     created_at = fields.DatetimeField(auto_now_add=True, index=True)
     updated_at = fields.DatetimeField(auto_now=True, index=True)

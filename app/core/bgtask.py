@@ -1,3 +1,5 @@
+"""请求级后台任务管理。"""
+
 from starlette.background import BackgroundTasks
 
 from .ctx import CTX_BG_TASKS

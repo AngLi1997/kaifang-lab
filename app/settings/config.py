@@ -1,3 +1,5 @@
+"""从环境变量与 `.env` 加载的应用配置。"""
+
 import os
 import typing
 
@@ -5,6 +7,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    """应用配置项，字段名与环境变量名一致。"""
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     VERSION: str = "0.1.0"
@@ -36,7 +40,8 @@ class Settings(BaseSettings):
     DATETIME_FORMAT: str = "%Y-%m-%d %H:%M:%S"
 
     @property
-    def TORTOISE_ORM(self) -> dict:
+    def TORTOISE_ORM(self) -> dict:  # pylint: disable=invalid-name
+        """按 `DB_BACKEND` 生成 Tortoise ORM 与 aerich 使用的配置。"""
         if self.DB_BACKEND == "sqlite":
             connection = {
                 "engine": "tortoise.backends.sqlite",

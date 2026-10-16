@@ -1,3 +1,5 @@
+"""API 管理路由。"""
+
 from fastapi import APIRouter
 
 from .apis import router

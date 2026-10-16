@@ -1,3 +1,5 @@
+"""角色管理接口。"""
+
 import logging
 
 from fastapi import APIRouter, Query
@@ -6,7 +8,7 @@ from tortoise.expressions import Q
 
 from app.controllers import role_controller
 from app.schemas.base import Success, SuccessExtra
-from app.schemas.roles import *
+from app.schemas.roles import RoleCreate, RoleUpdate, RoleUpdateMenusApis
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -18,6 +20,7 @@ async def list_role(
     page_size: int = Query(10, description="每页数量"),
     role_name: str = Query("", description="角色名称，用于查询"),
 ):
+    """按名称分页查询角色。"""
     q = Q()
     if role_name:
         q = Q(name__contains=role_name)
@@ -30,12 +33,14 @@ async def list_role(
 async def get_role(
     role_id: int = Query(..., description="角色ID"),
 ):
+    """按 ID 查询角色。"""
     role_obj = await role_controller.get(id=role_id)
     return Success(data=await role_obj.to_dict())
 
 
 @router.post("/create", summary="创建角色")
 async def create_role(role_in: RoleCreate):
+    """创建角色；名称重复时返回 400。"""
     if await role_controller.is_exist(name=role_in.name):
         raise HTTPException(
             status_code=400,
@@ -47,6 +52,7 @@ async def create_role(role_in: RoleCreate):
 
 @router.post("/update", summary="更新角色")
 async def update_role(role_in: RoleUpdate):
+    """更新角色。"""
     await role_controller.update(id=role_in.id, obj_in=role_in)
     return Success(msg="Updated Successfully")
 
@@ -55,12 +61,14 @@ async def update_role(role_in: RoleUpdate):
 async def delete_role(
     role_id: int = Query(..., description="角色ID"),
 ):
+    """删除角色。"""
     await role_controller.remove(id=role_id)
     return Success(msg="Deleted Success")
 
 
 @router.get("/authorized", summary="查看角色权限")
 async def get_role_authorized(id: int = Query(..., description="角色ID")):
+    """返回角色及其菜单与 API 权限。"""
     role_obj = await role_controller.get(id=id)
     data = await role_obj.to_dict(m2m=True)
     return Success(data=data)
@@ -68,6 +76,7 @@ async def get_role_authorized(id: int = Query(..., description="角色ID")):
 
 @router.post("/authorized", summary="更新角色权限")
 async def update_role_authorized(role_in: RoleUpdateMenusApis):
+    """替换角色的菜单与 API 权限。"""
     role_obj = await role_controller.get(id=role_in.id)
     await role_controller.update_roles(role=role_obj, menu_ids=role_in.menu_ids, api_infos=role_in.api_infos)
     return Success(msg="Updated Successfully")

@@ -1,3 +1,5 @@
+"""HTTP 接口路由。"""
+
 from fastapi import APIRouter
 
 from .v1 import v1_router

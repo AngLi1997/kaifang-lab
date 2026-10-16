@@ -1,3 +1,5 @@
+"""菜单管理路由。"""
+
 from fastapi import APIRouter
 
 from .menus import router

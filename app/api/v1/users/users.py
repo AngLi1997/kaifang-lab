@@ -1,3 +1,5 @@
+"""用户管理接口。"""
+
 import logging
 
 from fastapi import APIRouter, Body, Query
@@ -6,7 +8,7 @@ from tortoise.expressions import Q
 from app.controllers.dept import dept_controller
 from app.controllers.user import user_controller
 from app.schemas.base import Fail, Success, SuccessExtra
-from app.schemas.users import *
+from app.schemas.users import UserCreate, UserUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +23,7 @@ async def list_user(
     email: str = Query("", description="邮箱地址"),
     dept_id: int = Query(None, description="部门ID"),
 ):
+    """按用户名、邮箱和部门分页查询用户。"""
     q = Q()
     if username:
         q &= Q(username__contains=username)
@@ -41,6 +44,7 @@ async def list_user(
 async def get_user(
     user_id: int = Query(..., description="用户ID"),
 ):
+    """按 ID 查询用户（不含密码）。"""
     user_obj = await user_controller.get(id=user_id)
     user_dict = await user_obj.to_dict(exclude_fields=["password"])
     return Success(data=user_dict)
@@ -50,6 +54,7 @@ async def get_user(
 async def create_user(
     user_in: UserCreate,
 ):
+    """创建用户并绑定角色；邮箱重复时返回 400。"""
     user = await user_controller.get_by_email(user_in.email)
     if user:
         return Fail(code=400, msg="The user with this email already exists in the system.")
@@ -62,6 +67,7 @@ async def create_user(
 async def update_user(
     user_in: UserUpdate,
 ):
+    """更新用户并替换其角色。"""
     user = await user_controller.update(id=user_in.id, obj_in=user_in)
     await user_controller.update_roles(user, user_in.role_ids)
     return Success(msg="Updated Successfully")
@@ -71,11 +77,13 @@ async def update_user(
 async def delete_user(
     user_id: int = Query(..., description="用户ID"),
 ):
+    """删除用户。"""
     await user_controller.remove(id=user_id)
     return Success(msg="Deleted Successfully")
 
 
 @router.post("/reset_password", summary="重置密码")
 async def reset_password(user_id: int = Body(..., description="用户ID", embed=True)):
+    """把非超级管理员用户的密码重置为默认值。"""
     await user_controller.reset_password(user_id)
     return Success(msg="密码已重置为123456")

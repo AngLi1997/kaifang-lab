@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Query
+"""API 管理接口。"""
+
+from fastapi import APIRouter, Query, Request
 from tortoise.expressions import Q
 
 from app.controllers.api import api_controller
 from app.schemas import Success, SuccessExtra
-from app.schemas.apis import *
+from app.schemas.apis import ApiCreate, ApiUpdate
 
 router = APIRouter()
 
@@ -16,6 +18,7 @@ async def list_api(
     summary: str = Query(None, description="API简介"),
     tags: str = Query(None, description="API模块"),
 ):
+    """按路径、简介和模块分页查询 API。"""
     q = Q()
     if path:
         q &= Q(path__contains=path)
@@ -32,6 +35,7 @@ async def list_api(
 async def get_api(
     id: int = Query(..., description="Api"),
 ):
+    """按 ID 查询 API。"""
     api_obj = await api_controller.get(id=id)
     data = await api_obj.to_dict()
     return Success(data=data)
@@ -41,6 +45,7 @@ async def get_api(
 async def create_api(
     api_in: ApiCreate,
 ):
+    """创建 API 记录。"""
     await api_controller.create(obj_in=api_in)
     return Success(msg="Created Successfully")
 
@@ -49,6 +54,7 @@ async def create_api(
 async def update_api(
     api_in: ApiUpdate,
 ):
+    """更新 API 记录。"""
     await api_controller.update(id=api_in.id, obj_in=api_in)
     return Success(msg="Update Successfully")
 
@@ -57,11 +63,13 @@ async def update_api(
 async def delete_api(
     api_id: int = Query(..., description="ApiID"),
 ):
+    """删除 API 记录。"""
     await api_controller.remove(id=api_id)
     return Success(msg="Deleted Success")
 
 
 @router.post("/refresh", summary="刷新API列表")
-async def refresh_api():
-    await api_controller.refresh_api()
+async def refresh_api(request: Request):
+    """按当前应用的路由刷新 API 列表。"""
+    await api_controller.refresh_api(request.app.routes)
     return Success(msg="OK")

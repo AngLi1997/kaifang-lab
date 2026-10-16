@@ -1,3 +1,5 @@
+"""请求级中间件：后台任务调度与 HTTP 审计日志。"""
+
 import json
 import re
 from datetime import datetime
@@ -17,6 +19,8 @@ from .bgtask import BgTasks
 
 
 class SimpleBaseMiddleware:
+    """纯 ASGI 中间件基类，为 HTTP 请求提供 `before_request`/`after_request` 钩子。"""
+
     def __init__(self, app: ASGIApp) -> None:
         self.app = app
 
@@ -31,22 +35,30 @@ class SimpleBaseMiddleware:
         await response(request.scope, request.receive, send)
         await self.after_request(request)
 
-    async def before_request(self, request: Request):
+    async def before_request(self, request: Request):  # pylint: disable=unused-argument
+        """请求处理前调用；返回值作为实际处理请求的 ASGI 应用，返回 `None` 时使用 `self.app`。"""
         return self.app
 
-    async def after_request(self, request: Request):
+    async def after_request(self, request: Request):  # pylint: disable=unused-argument
+        """响应发送后调用。"""
         return None
 
 
 class BackGroundTaskMiddleware(SimpleBaseMiddleware):
+    """为每个请求创建后台任务容器，并在响应发送后执行其中的任务。"""
+
     async def before_request(self, request):
+        """在请求上下文中创建后台任务容器。"""
         await BgTasks.init_bg_tasks_obj()
 
     async def after_request(self, request):
+        """执行请求期间登记的后台任务。"""
         await BgTasks.execute_tasks()
 
 
 class HttpAuditLogMiddleware(BaseHTTPMiddleware):
+    """把匹配 `methods` 且不在 `exclude_paths` 中的请求写入 `AuditLog`。"""
+
     def __init__(self, app, methods: list[str], exclude_paths: list[str]):
         super().__init__(app)
         self.methods = methods
@@ -55,6 +67,7 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
         self.max_body_size = 1024 * 1024  # 1MB 响应体大小限制
 
     async def get_request_args(self, request: Request) -> dict:
+        """合并查询参数与 JSON 或表单请求体；上传文件只记录文件名。"""
         args = {}
         # 获取查询参数
         for key, value in request.query_params.items():
@@ -76,12 +89,14 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
                             args[k] = [file.filename for file in v]
                         else:
                             args[k] = v
-                except Exception:
+                except Exception:  # pylint: disable=broad-exception-caught
+                    # 无法解析的请求体不记录参数，审计日志不能中断请求
                     pass
 
         return args
 
     async def get_response_body(self, request: Request, response: Response) -> Any:
+        """读取响应体用于记录；流式响应读取后会重新填充 `body_iterator`。"""
         # 检查Content-Length
         content_length = response.headers.get("content-length")
         if content_length and int(content_length) > self.max_body_size:
@@ -109,12 +124,14 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
                         for item in data["data"]:
                             item.pop("response_body", None)
                 return data
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
+                # 审计日志列表的响应无法裁剪时不记录响应体
                 return None
 
         return self.lenient_json(body)
 
     def lenient_json(self, v: Any) -> Any:
+        """尽量把字符串或字节解析为 JSON，失败时原样返回。"""
         if isinstance(v, (str, bytes)):
             try:
                 return json.loads(v)
@@ -149,16 +166,19 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
                 user_obj: User = await AuthControl.is_authed(token)
             data["user_id"] = user_obj.id if user_obj else 0
             data["username"] = user_obj.username if user_obj else ""
-        except Exception:
+        except Exception:  # pylint: disable=broad-exception-caught
+            # 鉴权失败的请求同样要记录，用户信息置空
             data["user_id"] = 0
             data["username"] = ""
         return data
 
     async def before_request(self, request: Request):
+        """在请求体被下游消费前保存请求参数。"""
         request_args = await self.get_request_args(request)
         request.state.request_args = request_args
 
     async def after_request(self, request: Request, response: Response, process_time: int):
+        """为需要审计的请求写入一条 `AuditLog`。"""
         if request.method in self.methods:
             for path in self.exclude_paths:
                 if re.search(path, request.url.path, re.I) is not None:

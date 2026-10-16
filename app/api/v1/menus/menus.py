@@ -1,10 +1,12 @@
+"""菜单管理接口。"""
+
 import logging
 
 from fastapi import APIRouter, Query
 
 from app.controllers.menu import menu_controller
 from app.schemas.base import Fail, Success, SuccessExtra
-from app.schemas.menus import *
+from app.schemas.menus import MenuCreate, MenuUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +18,8 @@ async def list_menu(
     page: int = Query(1, description="页码"),
     page_size: int = Query(10, description="每页数量"),
 ):
+    """返回完整菜单树。"""
+
     async def get_menu_with_children(menu_id: int):
         menu = await menu_controller.model.get(id=menu_id)
         menu_dict = await menu.to_dict()
@@ -32,6 +36,7 @@ async def list_menu(
 async def get_menu(
     menu_id: int = Query(..., description="菜单id"),
 ):
+    """按 ID 查询菜单。"""
     result = await menu_controller.get(id=menu_id)
     return Success(data=result)
 
@@ -40,6 +45,7 @@ async def get_menu(
 async def create_menu(
     menu_in: MenuCreate,
 ):
+    """创建菜单。"""
     await menu_controller.create(obj_in=menu_in)
     return Success(msg="Created Success")
 
@@ -48,6 +54,7 @@ async def create_menu(
 async def update_menu(
     menu_in: MenuUpdate,
 ):
+    """更新菜单。"""
     await menu_controller.update(id=menu_in.id, obj_in=menu_in)
     return Success(msg="Updated Success")
 
@@ -56,6 +63,7 @@ async def update_menu(
 async def delete_menu(
     id: int = Query(..., description="菜单id"),
 ):
+    """删除没有子菜单的菜单。"""
     child_menu_count = await menu_controller.model.filter(parent_id=id).count()
     if child_menu_count > 0:
         return Fail(msg="Cannot delete a menu with child menus")

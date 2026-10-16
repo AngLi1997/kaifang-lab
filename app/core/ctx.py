@@ -1,3 +1,5 @@
+"""请求上下文变量。"""
+
 import contextvars
 
 from starlette.background import BackgroundTasks

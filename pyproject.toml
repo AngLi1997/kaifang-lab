@@ -80,6 +80,26 @@ lint.ignore = [
     "F405",
 ]
 
+[tool.pylint.main]
+# aerich 自动生成的迁移文件不做 lint
+ignore-paths = ["^migrations/.*$"]
+
+[tool.pylint.basic]
+# Tortoise 模型的内部 `Meta` 只承载 ORM 元数据
+no-docstring-rgx = "^_|^Meta$"
+
+[tool.pylint.format]
+# 与 Black、Ruff 的行宽保持一致
+max-line-length = 120
+
+[tool.pylint.variables]
+# FastAPI 查询参数和 Tortoise 主键沿用 `id` 作为对外字段名
+allowed-redefined-builtins = ["id"]
+
+[tool.pylint."messages control"]
+# Tortoise `Meta`、Pydantic 模型和 mixin 天然只有少量或没有公有方法
+disable = ["too-few-public-methods"]
+
 [tool.aerich]
 tortoise_orm = "app.settings.TORTOISE_ORM"
 location = "./migrations"

@@ -1,3 +1,5 @@
+"""后台管理相关的 ORM 模型。"""
+
 from tortoise import fields
 
 from app.schemas.menus import MenuType
@@ -7,6 +9,8 @@ from .enums import MethodType
 
 
 class User(BaseModel, TimestampMixin):
+    """系统用户。"""
+
     username = fields.CharField(max_length=20, unique=True, description="用户名称", index=True)
     alias = fields.CharField(max_length=30, null=True, description="姓名", index=True)
     email = fields.CharField(max_length=255, unique=True, description="邮箱", index=True)
@@ -23,6 +27,8 @@ class User(BaseModel, TimestampMixin):
 
 
 class Role(BaseModel, TimestampMixin):
+    """角色，关联可访问的菜单与 API。"""
+
     name = fields.CharField(max_length=20, unique=True, description="角色名称", index=True)
     desc = fields.CharField(max_length=500, null=True, description="角色描述")
     menus = fields.ManyToManyField("models.Menu", related_name="role_menus")
@@ -33,6 +39,8 @@ class Role(BaseModel, TimestampMixin):
 
 
 class Api(BaseModel, TimestampMixin):
+    """需要鉴权的 API 记录。"""
+
     path = fields.CharField(max_length=100, description="API路径", index=True)
     method = fields.CharEnumField(MethodType, description="请求方法", index=True)
     summary = fields.CharField(max_length=500, description="请求简介", index=True)
@@ -43,6 +51,8 @@ class Api(BaseModel, TimestampMixin):
 
 
 class Menu(BaseModel, TimestampMixin):
+    """前端导航菜单。"""
+
     name = fields.CharField(max_length=20, description="菜单名称", index=True)
     remark = fields.JSONField(null=True, description="保留字段")
     menu_type = fields.CharEnumField(MenuType, null=True, description="菜单类型")
@@ -60,6 +70,8 @@ class Menu(BaseModel, TimestampMixin):
 
 
 class Dept(BaseModel, TimestampMixin):
+    """部门。"""
+
     name = fields.CharField(max_length=20, unique=True, description="部门名称", index=True)
     desc = fields.CharField(max_length=500, null=True, description="备注")
     is_deleted = fields.BooleanField(default=False, description="软删除标记", index=True)
@@ -71,12 +83,16 @@ class Dept(BaseModel, TimestampMixin):
 
 
 class DeptClosure(BaseModel, TimestampMixin):
+    """部门闭包表，记录祖先与子代关系及层级深度。"""
+
     ancestor = fields.IntField(description="父代", index=True)
     descendant = fields.IntField(description="子代", index=True)
     level = fields.IntField(default=0, description="深度", index=True)
 
 
 class AuditLog(BaseModel, TimestampMixin):
+    """HTTP 请求审计日志。"""
+
     user_id = fields.IntField(description="用户ID", index=True)
     username = fields.CharField(max_length=64, default="", description="用户名称", index=True)
     module = fields.CharField(max_length=64, default="", description="功能模块", index=True)

@@ -1,3 +1,5 @@
+"""基础模块路由。"""
+
 from fastapi import APIRouter
 
 from .base import router

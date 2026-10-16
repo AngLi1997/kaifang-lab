@@ -1,3 +1,5 @@
+"""本地开发启动脚本：以热重载模式运行 uvicorn。"""
+
 import uvicorn
 from uvicorn.config import LOGGING_CONFIG
 

@@ -1,3 +1,5 @@
+"""角色管理路由。"""
+
 from fastapi import APIRouter
 
 from .roles import router

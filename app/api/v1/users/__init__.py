@@ -1,3 +1,5 @@
+"""用户管理路由。"""
+
 from fastapi import APIRouter
 
 from .users import router

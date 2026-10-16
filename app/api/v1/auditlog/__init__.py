@@ -1,3 +1,5 @@
+"""审计日志路由。"""
+
 from fastapi import APIRouter
 
 from .auditlog import router

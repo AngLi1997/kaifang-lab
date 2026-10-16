@@ -1,3 +1,5 @@
+"""菜单管理相关的数据结构。"""
+
 from enum import StrEnum
 from typing import Optional
 
@@ -5,11 +7,15 @@ from pydantic import BaseModel, Field
 
 
 class MenuType(StrEnum):
+    """菜单类型。"""
+
     CATALOG = "catalog"  # 目录
     MENU = "menu"  # 菜单
 
 
 class BaseMenu(BaseModel):
+    """菜单树节点。"""
+
     id: int
     name: str
     path: str
@@ -26,6 +32,8 @@ class BaseMenu(BaseModel):
 
 
 class MenuCreate(BaseModel):
+    """创建菜单的请求体。"""
+
     menu_type: MenuType = Field(default=MenuType.CATALOG.value)
     name: str = Field(example="用户管理")
     icon: Optional[str] = "ph:user-list-bold"
@@ -39,6 +47,8 @@ class MenuCreate(BaseModel):
 
 
 class MenuUpdate(BaseModel):
+    """更新菜单的请求体。"""
+
     id: int
     menu_type: Optional[MenuType] = Field(example=MenuType.CATALOG.value)
     name: Optional[str] = Field(example="用户管理")
