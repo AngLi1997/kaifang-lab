@@ -12,6 +12,7 @@ class BaseUser(BaseModel):
     id: int
     email: Optional[EmailStr] = None
     username: Optional[str] = None
+    nickname: Optional[str] = None
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     created_at: Optional[datetime]
@@ -24,7 +25,8 @@ class UserCreate(BaseModel):
     """创建用户的请求体。"""
 
     email: EmailStr = Field(example="admin@qq.com")
-    username: str = Field(example="admin")
+    username: str = Field(example="admin", description="账号")
+    nickname: Optional[str] = Field(None, example="超级管理员", description="昵称")
     password: str = Field(example="123456")
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
@@ -42,10 +44,18 @@ class UserUpdate(BaseModel):
     id: int
     email: EmailStr
     username: str
+    nickname: Optional[str] = None
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     role_ids: Optional[List[int]] = []
     dept_id: Optional[int] = 0
+
+
+class ProfileUpdate(BaseModel):
+    """当前用户修改个人资料的请求体。"""
+
+    nickname: Optional[str] = Field(None, max_length=30, description="昵称")
+    email: EmailStr
 
 
 class UpdatePassword(BaseModel):

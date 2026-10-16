@@ -91,11 +91,14 @@ function formatJSON(data) {
 
 const columns = [
   {
-    title: '用户名称',
-    key: 'username',
+    title: '操作人',
+    key: 'nickname',
     width: 'auto',
     align: 'center',
     ellipsis: { tooltip: true },
+    render(row) {
+      return row.nickname || row.username
+    },
   },
   {
     title: '接口概要',
@@ -216,12 +219,12 @@ const columns = [
       :get-data="api.getAuditLogList"
     >
       <template #queryBar>
-        <QueryBarItem label="用户名称" :label-width="70">
+        <QueryBarItem label="操作人" :label-width="70">
           <NInput
             v-model:value="queryItems.username"
             clearable
             type="text"
-            placeholder="请输入用户名称"
+            placeholder="请输入账号或昵称"
             @keypress.enter="$table?.handleSearch()"
           />
         </QueryBarItem>

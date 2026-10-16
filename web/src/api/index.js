@@ -6,6 +6,7 @@ export default {
   getUserMenu: () => request.get('/base/usermenu'),
   getUserApi: () => request.get('/base/userapi'),
   // profile
+  updateProfile: (data = {}) => request.post('/base/update_profile', data),
   updatePassword: (data = {}) => request.post('/base/update_password', data),
   uploadAvatar: (formData) => request.post('/base/avatar', formData, { timeout: 60000 }),
   // users

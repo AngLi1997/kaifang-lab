@@ -69,7 +69,7 @@ const callback = loopbackCallback(route.query.redirect_uri)
 const state = typeof route.query.state === 'string' ? route.query.state : ''
 const user = ref(null)
 const finished = ref(false)
-const displayName = computed(() => user.value?.alias || user.value?.username || '')
+const displayName = computed(() => user.value?.nickname || user.value?.username || '')
 const avatarUrl = computed(() => new URL(user.value?.avatar || logoUrl, window.location.origin).href)
 
 function returnTo(params) {

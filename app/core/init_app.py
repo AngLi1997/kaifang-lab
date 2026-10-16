@@ -71,19 +71,27 @@ def register_routers(app: FastAPI, prefix: str = "/api"):
     app.include_router(api_router, prefix=prefix)
 
 
+SUPERUSER_USERNAME = "admin"
+SUPERUSER_NICKNAME = "超级管理员"
+
+
 async def init_superuser():
-    """用户表为空时创建默认超级管理员。"""
+    """用户表为空时创建默认超级管理员；已有的 admin 账号未设置昵称时补上默认昵称。"""
     user = await user_controller.model.exists()
     if not user:
         await user_controller.create_user(
             UserCreate(
-                username="admin",
+                username=SUPERUSER_USERNAME,
+                nickname=SUPERUSER_NICKNAME,
                 email="admin@admin.com",
                 password="123456",
                 is_active=True,
                 is_superuser=True,
             )
         )
+    await user_controller.model.filter(
+        Q(username=SUPERUSER_USERNAME) & (Q(nickname__isnull=True) | Q(nickname=""))
+    ).update(nickname=SUPERUSER_NICKNAME)
 
 
 async def init_menus():

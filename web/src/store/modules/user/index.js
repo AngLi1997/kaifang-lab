@@ -17,9 +17,9 @@ export const useUserStore = defineStore('user', {
     name() {
       return this.userInfo?.username
     },
-    /** Display name: the user's alias (昵称), or the account name when no alias is set. */
+    /** 显示名称：用户的昵称，未设置昵称时回退为账号。 */
     nickname() {
-      return this.userInfo?.alias || this.userInfo?.username
+      return this.userInfo?.nickname || this.userInfo?.username
     },
     email() {
       return this.userInfo?.email
@@ -45,8 +45,8 @@ export const useUserStore = defineStore('user', {
           this.logout()
           return
         }
-        const { id, username, alias, email, avatar, roles, is_superuser, is_active } = res.data
-        this.userInfo = { id, username, alias, email, avatar, roles, is_superuser, is_active }
+        const { id, username, nickname, email, avatar, roles, is_superuser, is_active } = res.data
+        this.userInfo = { id, username, nickname, email, avatar, roles, is_superuser, is_active }
         return res.data
       } catch (error) {
         return error

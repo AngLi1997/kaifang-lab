@@ -15,7 +15,7 @@ router = APIRouter()
 async def get_audit_log_list(  # pylint: disable=too-many-arguments,too-many-positional-arguments
     page: int = Query(1, description="页码"),
     page_size: int = Query(10, description="每页数量"),
-    username: str = Query("", description="操作人名称"),
+    username: str = Query("", description="操作人账号或昵称"),
     module: str = Query("", description="功能模块"),
     method: str = Query("", description="请求方法"),
     summary: str = Query("", description="接口描述"),
@@ -27,7 +27,7 @@ async def get_audit_log_list(  # pylint: disable=too-many-arguments,too-many-pos
     """按条件分页查询审计日志，按创建时间倒序。"""
     q = Q()
     if username:
-        q &= Q(username__icontains=username)
+        q &= Q(username__icontains=username) | Q(nickname__icontains=username)
     if module:
         q &= Q(module__icontains=module)
     if method:

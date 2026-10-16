@@ -169,10 +169,12 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
                 user_obj: User = await AuthControl.is_authed(token)
             data["user_id"] = user_obj.id if user_obj else 0
             data["username"] = user_obj.username if user_obj else ""
+            data["nickname"] = (user_obj.nickname or user_obj.username) if user_obj else ""
         except Exception:  # pylint: disable=broad-exception-caught
             # 鉴权失败的请求同样要记录，用户信息置空
             data["user_id"] = 0
             data["username"] = ""
+            data["nickname"] = ""
         return data
 
     async def before_request(self, request: Request):

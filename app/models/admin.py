@@ -12,7 +12,7 @@ class User(BaseModel, TimestampMixin):
     """系统用户。"""
 
     username = fields.CharField(max_length=20, unique=True, description="用户名称", index=True)
-    alias = fields.CharField(max_length=30, null=True, description="姓名", index=True)
+    nickname = fields.CharField(max_length=30, null=True, description="昵称", index=True)
     email = fields.CharField(max_length=255, unique=True, description="邮箱", index=True)
     phone = fields.CharField(max_length=20, null=True, description="电话", index=True)
     password = fields.CharField(max_length=128, null=True, description="密码")
@@ -96,6 +96,7 @@ class AuditLog(BaseModel, TimestampMixin):
 
     user_id = fields.IntField(description="用户ID", index=True)
     username = fields.CharField(max_length=64, default="", description="用户名称", index=True)
+    nickname = fields.CharField(max_length=64, default="", description="操作人昵称", index=True)
     module = fields.CharField(max_length=64, default="", description="功能模块", index=True)
     summary = fields.CharField(max_length=128, default="", description="请求描述", index=True)
     method = fields.CharField(max_length=10, default="", description="请求方法", index=True)

@@ -12,7 +12,7 @@ from app.models.admin import Api, Menu, Role, User
 from app.models.enums import FileCategory
 from app.schemas.base import Fail, Success
 from app.schemas.login import CredentialsSchema, JWTOut, JWTPayload
-from app.schemas.users import UpdatePassword
+from app.schemas.users import ProfileUpdate, UpdatePassword
 from app.settings import settings
 from app.utils.jwt_utils import create_access_token
 from app.utils.password import get_password_hash, verify_password
@@ -23,7 +23,7 @@ HIDDEN_MENU_COMPONENTS = {"/system/api", "/top-menu"}
 
 @router.post("/access_token", summary="获取token")
 async def login_access_token(credentials: CredentialsSchema):
-    """校验用户名密码并签发访问令牌。"""
+    """校验账号密码并签发访问令牌。"""
     user: User = await user_controller.authenticate(credentials)
     await user_controller.update_last_login(user.id)
     access_token_expires = timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -39,6 +39,7 @@ async def login_access_token(credentials: CredentialsSchema):
             )
         ),
         username=user.username,
+        nickname=user.nickname or user.username,
     )
     return Success(data=data.model_dump())
 
@@ -99,6 +100,19 @@ async def get_user_api():
         apis.extend([api.method.lower() + api.path for api in api_objs])
     apis = list(set(apis))
     return Success(data=apis)
+
+
+@router.post("/update_profile", summary="修改个人资料", dependencies=[DEPEND_AUTH])
+async def update_user_profile(req_in: ProfileUpdate):
+    """修改当前用户的昵称和邮箱；邮箱已被其他用户使用时返回失败。"""
+    user_id = CTX_USER_ID.get()
+    owner = await user_controller.get_by_email(req_in.email)
+    if owner and owner.id != user_id:
+        return Fail(msg="该邮箱已被其他用户使用")
+    user = await user_controller.update_profile(user_id, req_in)
+    data = await user.to_dict(exclude_fields=["password"])
+    data["avatar"] = avatar_url(user)
+    return Success(data=data, msg="修改成功")
 
 
 @router.post("/update_password", summary="修改密码", dependencies=[DEPEND_AUTH])

@@ -16,16 +16,21 @@ const infoFormRef = ref(null)
 const infoForm = ref({
   avatar: userStore.avatar,
   username: userStore.name,
+  nickname: userStore.userInfo?.nickname || '',
   email: userStore.email,
 })
 async function updateProfile() {
   isLoading.value = true
   infoFormRef.value?.validate(async (err) => {
-    if (err) return
+    if (err) {
+      isLoading.value = false
+      return
+    }
+    const { nickname, email } = infoForm.value
     await api
-      .updateUser({ ...infoForm.value, id: userStore.userId })
-      .then(() => {
-        userStore.setUserInfo(infoForm.value)
+      .updateProfile({ nickname, email })
+      .then((res) => {
+        userStore.setUserInfo({ nickname: res.data.nickname, email: res.data.email })
         isLoading.value = false
         $message.success(t('common.text.update_success'))
       })
@@ -51,15 +56,7 @@ async function uploadAvatar({ file, onFinish, onError }) {
     isUploadingAvatar.value = false
   }
 }
-const infoFormRules = {
-  username: [
-    {
-      required: true,
-      message: t('views.profile.message_username_required'),
-      trigger: ['input', 'blur', 'change'],
-    },
-  ],
-}
+const infoFormRules = {}
 
 // 修改密码的表单
 const passwordFormRef = ref(null)
@@ -170,10 +167,14 @@ function validatePasswordSame(rule, value) {
               </div>
             </NFormItem>
             <NFormItem :label="$t('views.profile.label_username')" path="username">
+              <NInput :value="infoForm.username" type="text" disabled />
+            </NFormItem>
+            <NFormItem :label="$t('views.profile.label_nickname')" path="nickname">
               <NInput
-                v-model:value="infoForm.username"
+                v-model:value="infoForm.nickname"
                 type="text"
-                :placeholder="$t('views.profile.placeholder_username')"
+                :maxlength="30"
+                :placeholder="$t('views.profile.placeholder_nickname')"
               />
             </NFormItem>
             <NFormItem :label="$t('views.profile.label_email')" path="email">

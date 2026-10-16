@@ -6,9 +6,9 @@ from pydantic import BaseModel, Field
 
 
 class CredentialsSchema(BaseModel):
-    """用户名密码登录请求体。"""
+    """账号密码登录请求体。"""
 
-    username: str = Field(..., description="用户名称", example="admin")
+    username: str = Field(..., description="账号", example="admin")
     password: str = Field(..., description="密码", example="123456")
 
 
@@ -17,6 +17,7 @@ class JWTOut(BaseModel):
 
     access_token: str
     username: str
+    nickname: str
 
 
 class JWTPayload(BaseModel):

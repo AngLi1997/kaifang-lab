@@ -8,7 +8,7 @@ from fastapi.exceptions import HTTPException
 from app.core.crud import CRUDBase
 from app.models.admin import User
 from app.schemas.login import CredentialsSchema
-from app.schemas.users import UserCreate, UserUpdate
+from app.schemas.users import ProfileUpdate, UserCreate, UserUpdate
 from app.utils.password import get_password_hash, verify_password
 
 from .role import role_controller
@@ -25,7 +25,7 @@ class UserController(CRUDBase[User, UserCreate, UserUpdate]):
         return await self.model.filter(email=email).first()
 
     async def get_by_username(self, username: str) -> Optional[User]:
-        """按用户名查找用户，不存在时返回 `None`。"""
+        """按账号查找用户，不存在时返回 `None`。"""
         return await self.model.filter(username=username).first()
 
     async def create_user(self, obj_in: UserCreate) -> User:
@@ -41,16 +41,21 @@ class UserController(CRUDBase[User, UserCreate, UserUpdate]):
         await user.save()
 
     async def authenticate(self, credentials: CredentialsSchema) -> Optional["User"]:
-        """校验用户名、密码和启用状态，失败时抛出 400。"""
+        """校验账号、密码和启用状态，失败时抛出 400。"""
         user = await self.model.filter(username=credentials.username).first()
         if not user:
-            raise HTTPException(status_code=400, detail="无效的用户名")
+            raise HTTPException(status_code=400, detail="无效的账号")
         verified = verify_password(credentials.password, user.password)
         if not verified:
             raise HTTPException(status_code=400, detail="密码错误!")
         if not user.is_active:
             raise HTTPException(status_code=400, detail="用户已被禁用")
         return user
+
+    async def update_profile(self, user_id: int, obj_in: ProfileUpdate) -> User:
+        """更新用户自己的昵称和邮箱；空白昵称存为 `None`。"""
+        nickname = (obj_in.nickname or "").strip() or None
+        return await self.update(id=user_id, obj_in={"nickname": nickname, "email": obj_in.email})
 
     async def update_roles(self, user: User, role_ids: List[int]) -> None:
         """用 `role_ids` 替换用户的全部角色。"""

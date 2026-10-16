@@ -19,14 +19,14 @@ router = APIRouter()
 async def list_user(
     page: int = Query(1, description="页码"),
     page_size: int = Query(10, description="每页数量"),
-    username: str = Query("", description="用户名称，用于搜索"),
+    username: str = Query("", description="账号或昵称，用于搜索"),
     email: str = Query("", description="邮箱地址"),
     dept_id: int = Query(None, description="部门ID"),
 ):
-    """按用户名、邮箱和部门分页查询用户。"""
+    """按账号或昵称、邮箱和部门分页查询用户。"""
     q = Q()
     if username:
-        q &= Q(username__contains=username)
+        q &= Q(username__contains=username) | Q(nickname__contains=username)
     if email:
         q &= Q(email__contains=email)
     if dept_id is not None:
