@@ -51,14 +51,17 @@ const router = useRouter()
 
 /**
  * Accept only a loopback callback so the token never leaves the user's machine.
- * KaifangHarness Desktop listens on 127.0.0.1 with a random port during one sign-in attempt.
+ * KaifangHarness Desktop listens on 127.0.0.1 with a random port at `/kaifang/callback` during one sign-in attempt;
+ * the KaifangHarness Web client serves `kaifang/callback.html` next to its page on a loopback origin.
  */
 function loopbackCallback(value) {
   if (typeof value !== 'string') return null
   try {
     const url = new URL(value)
     const loopback = url.hostname === '127.0.0.1' || url.hostname === 'localhost'
-    if (url.protocol !== 'http:' || !loopback || url.pathname !== '/kaifang/callback') return null
+    const callbackPath =
+      url.pathname === '/kaifang/callback' || url.pathname.endsWith('/kaifang/callback.html')
+    if (url.protocol !== 'http:' || !loopback || !callbackPath) return null
     return url
   } catch {
     return null
