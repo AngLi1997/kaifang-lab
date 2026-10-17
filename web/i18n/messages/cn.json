@@ -35,7 +35,7 @@
       "label_change_password": "修改密码",
       "label_avatar": "头像",
       "button_upload_avatar": "上传头像",
-      "text_avatar_hint": "支持 PNG、JPEG、WebP、GIF，不超过 2MB",
+      "text_avatar_hint": "支持 PNG、JPEG、WebP、GIF，不超过 10MB",
       "message_avatar_updated": "头像已更新",
       "label_username": "账号",
       "label_nickname": "昵称",

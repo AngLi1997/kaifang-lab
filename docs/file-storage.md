@@ -38,7 +38,7 @@ make services-up
 | `MINIO_SECURE` | `false` | 是否通过 HTTPS 访问 MinIO：`true`/`false` |
 | `MINIO_DEFAULT_BUCKET` | `kaifang-lab` | 默认桶名，须符合 S3 桶命名规则（3–63 位小写字母、数字、`-`、`.`） |
 | `FILE_MAX_SIZE_MB` | `100` | 通用附件上传大小上限（MB） |
-| `AVATAR_MAX_SIZE_MB` | `2` | 头像上传大小上限（MB） |
+| `AVATAR_MAX_SIZE_MB` | `10` | 头像上传大小上限（MB） |
 | `AVATAR_ALLOWED_TYPES` | `["image/png","image/jpeg","image/webp","image/gif"]` | 头像允许的 MIME 类型，环境变量中使用 JSON 数组 |
 
 生产环境请为 MinIO 使用独立的强口令，不要沿用示例值；也可以在 MinIO 中为后端单独创建一个仅能访问默认桶的访问密钥，再填入 `MINIO_ACCESS_KEY`/`MINIO_SECRET_KEY`。
